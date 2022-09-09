@@ -1,3 +1,4 @@
+from gc import freeze
 from operator import truediv
 from random import randint
 
@@ -44,11 +45,17 @@ class Doge():
     def bark(self):
         print(self.name,("barked"))
 
+    def freeze(self):
+        if randint(1,2) == 1:
+            self.health += randint (5,10)
+        else:
+            self.energy += randint (1,4)
+
 def player_turn():
     player_action = input("what do you want your doge to do (`attack`, `regenerate`,`eat`): ")
     if player_action == "attack":
         returned_damage = player_doge.attack()
-        print("your dog inflicted {} damage to its opponent!!!".format(returned_damage))
+        print("your doge inflicted {} damage to its opponent!!!".format(returned_damage))
         opponent_doge.attacked(returned_damage)
         print("the enemy doge is on {} health".format(opponent_doge.health))
         return True
@@ -69,11 +76,9 @@ def enemy_turn():
     attack_weight = 3
     regenerate_weight = opponent_doge.health/10
     eat_weight = opponent_doge.energy/10
-    print("enemys turn")
-
     if attack_weight < regenerate_weight and attack_weight < eat_weight:
         returned_damage = opponent_doge.attack()
-        print("the enemy dog inflicted {} damage to you!!!".format(returned_damage))
+        print("the enemy doge inflicted {} damage to you!!!".format(returned_damage))
         player_doge.attacked(returned_damage)
         return True
     elif eat_weight < regenerate_weight and eat_weight < attack_weight: 
@@ -84,6 +89,11 @@ def enemy_turn():
         print("the opponent doge regenerated")
         opponent_doge.regenerate()
         return
+    
+
+    print(attack_weight,regenerate_weight,eat_weight)
+    print("The enemy doge froze and regained his breath gaining some energy and health")
+    player_doge.freeze()
 
 
 
@@ -119,3 +129,4 @@ while True:
         if valid == True:
             break
     enemy_turn()
+input("press enter key to close")
