@@ -1,10 +1,9 @@
-from gc import freeze
 from operator import truediv
 from random import randint
 
 
 class Doge():
-    def __init__(self, name, energy ,health, is_alive: bool):
+    def __init__(self, name):
         self.name = name
         self.energy = 100
         self.health = 100
@@ -18,6 +17,7 @@ class Doge():
             self.energy = 1
         return returned_damage
     
+
     def regenerate(self):
         if self.health < 100:
             self.health += self.energy//10 * randint(5,10)
@@ -29,27 +29,33 @@ class Doge():
         else:
             self.health = 100
 
+
     def eat(self):
         self.energy += randint (30,70)
         if self.energy > 100:
             self.energy = 100
 
+
     def attacked(self,received_damage):
         self.health -= received_damage
-    
+
+
     def check_alive(self):
         if self.health < 1:
             self.is_alive = False
             return False
 
+
     def bark(self):
         print(self.name,("barked"))
+
 
     def freeze(self):
         if randint(1,2) == 1:
             self.health += randint (5,10)
         else:
             self.energy += randint (1,4)
+
 
 def player_turn():
     player_action = input("what do you want your doge to do (`attack`, `regenerate`,`eat`): ")
@@ -71,7 +77,6 @@ def player_turn():
 
 
 
-
 def enemy_turn():
     attack_weight = 3
     regenerate_weight = opponent_doge.health/10
@@ -90,8 +95,6 @@ def enemy_turn():
         opponent_doge.regenerate()
         return
     
-
-    print(attack_weight,regenerate_weight,eat_weight)
     print("The enemy doge froze and regained his breath gaining some energy and health")
     player_doge.freeze()
 
@@ -115,10 +118,10 @@ opponent_doge= Doge(name2,0,0,True)
 while True:
 
     ## checks if the dogs are alive
-    if player_doge.check_alive() == False:
+    if not player_doge.check_alive():
         print("your doge is ded")
         break
-    elif opponent_doge.check_alive() == False:
+    elif not opponent_doge.check_alive():
         print("the enemy doge is ded")
         break
 
@@ -126,7 +129,7 @@ while True:
     print("your doge stats: Health: {} energy: {}".format(player_doge.health, player_doge.energy))
     while True:
         valid = player_turn()
-        if valid == True:
+        if valid:
             break
     enemy_turn()
 input("press enter key to close")
