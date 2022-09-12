@@ -21,10 +21,13 @@ class Doge():
         if self.health < 100:
             self.health += self.energy//10 * randint(5,10)
             self.energy -= randint(10,40)
+            
             if self.health > 100:
                 self.health = 100
+
             if self.energy < 1:
                 self.energy = 1
+
         else:
             self.health = 100
 
@@ -33,7 +36,6 @@ class Doge():
         self.energy += randint (30,70)
         if self.energy > 100:
             self.energy = 100
-
 
     def attacked(self,received_damage):
         self.health -= received_damage
@@ -61,22 +63,25 @@ def player_turn():
     print("your doge stats: Health: {} energy: {}".format(player_doge.health, player_doge.energy))
     player_action = input("what do you want your doge to do (`attack`, `regenerate`,`eat`): ")
     ## checks the player inputs and calls the functions depending on the input
+
     if player_action == "attack":
         returned_damage = player_doge.attack()
         print("your doge inflicted {} damage to its opponent!!!".format(returned_damage))
         opponent_doge.attacked(returned_damage)
         print("the enemy doge is on {} health".format(opponent_doge.health))
         return True
+
     elif player_action == "regenerate":
         player_doge.regenerate()
         return True
+
     elif player_action == "eat":
         player_doge.eat()
         return True
+
     else: 
         print("invalid input")
         return False
-
 
 
 def enemy_turn():
@@ -91,14 +96,17 @@ def enemy_turn():
         print("the enemy doge inflicted {} damage to you!!!".format(returned_damage))
         player_doge.attacked(returned_damage)
         return True
+
     elif eat_weight < regenerate_weight and eat_weight < attack_weight: 
         print("the opponent doge ate")
         opponent_doge.eat()
         return
+
     elif regenerate_weight< eat_weight and regenerate_weight < attack_weight:
         print("the opponent doge regenerated")
         opponent_doge.regenerate()
         return
+
     ## if 2 weights are the same freeze rather than the doge breaking
     print("The enemy doge froze and regained his breath gaining some energy and health")
     player_doge.freeze()
@@ -111,7 +119,6 @@ name2 = input("please name the opponent doge: ")
 ## create doges 
 player_doge= Doge(name1)
 opponent_doge= Doge(name2)
-
 
 ## game loop, breaks when one of the dogs dies
 while True:
