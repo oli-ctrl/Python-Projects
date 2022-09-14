@@ -1,6 +1,5 @@
 from random import randint
 
-
 class Doge():
     def __init__(self, name):
         self.name = name
@@ -44,8 +43,8 @@ class Doge():
     def check_alive(self):
         if self.health < 1:
             self.is_alive = False
-            return False
-        return True
+            return self.is_alive
+        return self.is_alive
 
     ## old thing for testing
     def bark(self):
