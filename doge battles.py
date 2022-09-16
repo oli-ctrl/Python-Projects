@@ -116,14 +116,13 @@ def enemy_turn():
     print("The enemy doge froze and regained his breath gaining some energy and health")
     opponent_doge.freeze()
 
-
 ## the dogs name inputs (unused D:)
-name1 = input("please name your doge: ")
-name2 = input("please name the opponent doge: ")
+##name1 = input("please name your doge: ")
+##name2 = input("please name the opponent doge: ")
 
 ## create doges 
-player_doge= Doge(name1)
-opponent_doge= Doge(name2)
+player_doge= Doge("player")
+opponent_doge= Doge("enemy")
 
 ## game loop, breaks when one of the dogs dies
 while True:
