@@ -1,5 +1,6 @@
 from random import randint
 
+
 class Doge():
     def __init__(self, name):
         self.name = name
@@ -56,6 +57,11 @@ class Doge():
             self.health += randint (5,10)
         else:
             self.energy += randint (1,4)
+        
+        if self.energy > 100:
+            self.energy = 100
+        if self.health > 100:
+            self.health = 100
 
 ## players turn 
 def player_turn():
@@ -82,7 +88,7 @@ def player_turn():
         print("invalid input")
         return False
 
-
+## enemy turn
 def enemy_turn():
     ## calculate the weights of the actions
     attack_weight = 3
@@ -108,10 +114,10 @@ def enemy_turn():
 
     ## if 2 weights are the same freeze rather than the doge breaking
     print("The enemy doge froze and regained his breath gaining some energy and health")
-    player_doge.freeze()
+    opponent_doge.freeze()
 
 
-## the dogs name inputs
+## the dogs name inputs (unused D:)
 name1 = input("please name your doge: ")
 name2 = input("please name the opponent doge: ")
 
