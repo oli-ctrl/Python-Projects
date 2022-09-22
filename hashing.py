@@ -10,22 +10,16 @@ def hashtable(input,index):
     while True:
         if b > len(list)-1:
             b = 0
-        print (b)
         if hashlist[b] == None:
             hashlist[b] = input
             break
         else:
             b += 1
 
-list = []
+list = ["Frank", "Victor", "Arthur", "Winston", "Neil", "Abdulla", "Charlie", "Scott", "Ed",  "Ben"]
 hashlist = [None]*len(list)
 
 for i in list:
-    print(i)
     hashtable(i, ASCIIhash(i, len(list)))
 
-
-
-
 print(hashlist)
-    
