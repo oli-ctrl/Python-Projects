@@ -23,3 +23,5 @@ for i in list:
     hashtable(i, ASCIIhash(i, len(list)))
 
 print(hashlist)
+
+print (ASCIIhash("hello",len(list)))
