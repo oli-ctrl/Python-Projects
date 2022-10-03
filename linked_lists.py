@@ -35,8 +35,14 @@ class LinkedList():
     def printList(self):
         """Cycles through each node in the linked lists and prints each
         one in sequence"""
-        print("CODE ME")
-    
+        temp = self.head
+        count = 0
+        while temp != None:
+            print(temp.data)
+            temp = temp.pointer
+            count += 1 
+        return count
+
     def searchList(self, elmnt, all_nodes=False):
         """Searches for <elmnt> in the linked list and returns the node 
         number where the element is found or returns False if it fails
@@ -59,11 +65,13 @@ a = Node("A")
 b = Node("B")
 c = Node("C")
 d = Node("D")
+e = Node("E")
 
 example = LinkedList()
 
 example.addNode(a)
 example.addNode(b)
+example.addNode(e)
 example.addNode(c)
 example.addNode(d)
 example.printList()
