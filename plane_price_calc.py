@@ -24,7 +24,6 @@ class Plane ():
                 print ("Invalid input")
                 return False
     def get_data (self):
-        loop = 0
         print("-------------------------")
         print (f"plane type Shortened: {planes[self.type_pos][0]}")
         print (f"plane type: {planes[self.type_pos][1]}")
@@ -32,6 +31,20 @@ class Plane ():
         print (f"Maximum flight range: {planes[self.type_pos][3]}")
         print (f"Capacity if all seats are standard-class: {planes[self.type_pos][4]}")
         print (f"Capacity if all seats are first-class: {planes[self.type_pos][5]}")
+
+
+    def get_data_more (self):
+        print("-------------------------")
+        print (f"plane type Shortened: {planes[self.type_pos][0]}")
+        print (f"plane type: {planes[self.type_pos][1]}")
+        print (f"running cost per seet per 100 km: £{planes[self.type_pos][2]}")
+        print (f"Maximum flight range: {planes[self.type_pos][3]}")
+        print (f"Capacity if all seats are standard-class: {planes[self.type_pos][4]}")
+        print (f"Capacity if all seats are first-class: {planes[self.type_pos][5]}")
+        print (f"user amount of first class: {self.first_amount}")
+        print (f"user amount of standard class: {self.standard_amount}")
+        print (f"user chosen home {self.home}")
+        print (f"user chosen destination {self.destination}")
     def reset_data (self):
         self.type = None
         self.type_pos = None
@@ -112,8 +125,13 @@ def check_flight_range ():
     if plane.home == "JPL":
         if airports[plane.destination_pos][2] > planes[plane.type_pos][3]:
             print("airport too far away, pick an aircraft with a longer range")
-        print ("what")
-    print ("wha")
+            print(f"your plane has a range of{planes[plane.type_pos][3]} and the distance to the airport is {airports[plane.destination_pos][3]}")
+    elif plane.home == "BOH":
+        if airports[plane.destination_pos][3] > planes[plane.type_pos][3]:
+            print("airport too far away, pick an aircraft with a longer range")
+            print(f"your plane has a range of{planes[plane.type_pos][3]} and the distance to the airport is {airports[plane.destination_pos][3]}")
+
+
 def main_menu ():
     print("-------------------------")
     for i in inputs:
@@ -138,6 +156,9 @@ def main_menu ():
     elif choice == 5:
         print("exiting program")
         return True
+    elif choice == 6:
+        print("giving all secret data")
+        plane.get_data_more()
     
 
 
