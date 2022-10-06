@@ -62,6 +62,7 @@ def seat_calc (inps):
         plane.first_amount = inps
         plane.standard_amount = (planes[plane.type_pos][4] - (inps*2))
         main_menu()
+        return
 
 
 ## airport details 
@@ -73,6 +74,7 @@ def dep_location ():
     else: 
         print ("not a valid input")
         main_menu()
+        return
 def arive_location():
     
     location = input(f"please input your targeted airport ({airports[0][0]},{airports[1][0]},{airports[2][0]},{airports[3][0]},{airports[4][0]},)")
@@ -87,10 +89,31 @@ def arive_location():
         loop += 1
         if loop == len(airports):
             print ("Invalid airport")
+            main_menu()
+            return
 
-
-
-
+##price plan
+def check_airports():
+    if plane.home == None or plane.destination == None:
+        print("you need to add your airports")
+        main_menu()
+        return
+def check_planes():
+    if plane.type == None or plane.destination == None:
+        print("you need to add your plane type")
+        main_menu()
+        return
+def check_seats ():
+    if plane.first_amount == None or plane.standard_amount == None:
+        print("you need to add the amount of first class seats on the aircraft")
+        main_menu()
+        return
+def check_flight_range ():
+    if plane.home == "JPL":
+        if airports[plane.destination_pos][2] > planes[plane.type_pos][3]:
+            print("airport too far away, pick an aircraft with a longer range")
+        print ("what")
+    print ("wha")
 def main_menu ():
     print("-------------------------")
     for i in inputs:
@@ -105,8 +128,10 @@ def main_menu ():
         plane.get_data()
         seat_calc(int(input("how many first-class seats are on the aircraft?: ")))
     elif choice == 3:
-        ## DO THIS TOMMOROW :D
-        print("enter price plan and calculate proffit soon")
+        check_airports()
+        check_planes()
+        check_seats()
+        check_flight_range ()
     elif choice == 4:
         plane.reset_data()
         print("data cleared")
