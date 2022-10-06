@@ -10,6 +10,8 @@ class Plane ():
         self.destination_pos = None
         self.first_amount = None
         self.standard_amount = None
+        self.first_price = None
+        self.standard_price = None
 
 
     def set_type (self, inp):
@@ -45,6 +47,7 @@ class Plane ():
         print (f"user amount of standard class: {self.standard_amount}")
         print (f"user chosen home {self.home}")
         print (f"user chosen destination {self.destination}")
+
     def reset_data (self):
         self.type = None
         self.type_pos = None
@@ -53,6 +56,8 @@ class Plane ():
         self.destination_pos = None
         self.first_amount = None
         self.standard_amount = None
+        self.first_price = None
+        self.standard_price = None
 
 ## enter flight details + stuff in class
 def plane_input ():
@@ -130,7 +135,10 @@ def check_flight_range ():
         if airports[plane.destination_pos][3] > planes[plane.type_pos][3]:
             print("airport too far away, pick an aircraft with a longer range")
             print(f"your plane has a range of{planes[plane.type_pos][3]} and the distance to the airport is {airports[plane.destination_pos][3]}")
-
+def price_options():
+    plane.standard_price = int(input("enter the price of the standard class seats"))
+    plane.first_price = int(input("enter the price of the first class seats"))
+    
 
 def main_menu ():
     print("-------------------------")
@@ -150,6 +158,7 @@ def main_menu ():
         check_planes()
         check_seats()
         check_flight_range ()
+        price_options()
     elif choice == 4:
         plane.reset_data()
         print("data cleared")
