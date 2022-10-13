@@ -80,7 +80,6 @@ class Plane ():
                 print (f"more than the allowed {planes[self.type_pos][5]} first-class seats ")
                 main_menu() 
                 return False
-            return True
         else:
             if planes[self.type_pos][5] > planes[self.type_pos][4]/2:
                 print(f"more than half the capacity of the {planes[self.type_pos][4]} standard-class seats")
@@ -186,7 +185,7 @@ def main_menu ():
         if plane.plane_input() == False: 
             return
         if plane.get_data() == False:
-            return        
+            return     
         if plane.seat_calc() == False:
             return
     elif choice == 3:
@@ -225,7 +224,6 @@ inputs = ["1. enter airport details", "2. Enter flight details","3. enter price 
 ## define plane 
 plane = Plane()
 ## main loop
-
 while True:
     end = main_menu()
     if end == True:
