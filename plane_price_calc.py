@@ -30,6 +30,7 @@ class Plane ():
         print (f"Maximum flight range: {planes[self.type_pos][3]}")
         print (f"Capacity if all seats are standard-class: {planes[self.type_pos][4]}")
         print (f"Capacity if all seats are first-class: {planes[self.type_pos][5]}")
+        return True
 
 
     def get_data_more (self):
@@ -157,10 +158,11 @@ class Plane ():
                 return False  
             return True 
     def price_options(self):
-        self.standard_price = get_input(1,"enter the price of the standard class seats")
-        self.first_price = get_input(1,"enter the price of the first class seats")
+        self.standard_price = get_input(1,"enter the price of the standard class seats: ")
+        self.first_price = get_input(1,"enter the price of the first class seats: ")
         return False
-    
+
+## handle exeptions with int inputs :D 
 def get_input (type, message):
     if type == 1: 
         try:
@@ -170,6 +172,7 @@ def get_input (type, message):
             return None
     return None
 
+## the main menu with the options
 def main_menu ():
     print("-------------------------")
     for i in inputs:
@@ -177,30 +180,30 @@ def main_menu ():
     print("-------------------------")
     choice = get_input(1,"please enter the number before your choice: ")
     if choice == 1:
-        if plane.dep_location() == False:
+        if not plane.dep_location():
             return
-        if plane.arive_location() == False:
+        if not plane.arive_location():
             return
     elif choice == 2: 
-        if plane.plane_input() == False: 
+        if not plane.plane_input():
             return
-        if plane.get_data() == False:
+        if not plane.get_data():
             return     
-        if plane.seat_calc() == False:
+        if not plane.seat_calc():
             return
     elif choice == 3:
-        if plane.check_airports() == False:
+        if not plane.check_airports():
             return
-        if plane.check_planes() == False:
+        if not plane.check_planes():
             return
-        if plane.check_seats() == False:
+        if not plane.check_seats():
             return 
-        if plane.check_flight_range () == False:
+        if not plane.check_flight_range ():
             return
-        if plane.price_options() == False:
+        if not plane.price_options():
             return
     elif choice == 4:
-        if plane.reset_data() == False:
+        if not plane.reset_data():
             return
         print("data cleared")
     elif choice == 5:
