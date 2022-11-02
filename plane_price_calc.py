@@ -49,7 +49,7 @@ class Plane ():
         print (f"user chosen destination {self.destination}")
 
     def reset_data (self):
-        self.type = None
+        self.type = None 
         self.type_pos = None
         self.home = None
         self.destination = None
