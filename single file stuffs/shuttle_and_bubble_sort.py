@@ -1,8 +1,6 @@
 def shuttle_sort (data):
-    count = 0
     finished = False
     while not finished:
-        count+=1
         finished = True
         # normal bubble sort
         for position in range(0, len(data)-1):
@@ -19,13 +17,11 @@ def shuttle_sort (data):
                     data[rev_position-1] = data[rev_position]
                     data[rev_position] = rev_hold
                     finished = False
-    return data,count
+    return data
 
 def bubble_sort (data):
     finished = False
-    count = 0
     while not finished:
-        count+=1
         finished = True
         # normal bubble sort
         for position in range(0, len(data)-1):
@@ -34,9 +30,8 @@ def bubble_sort (data):
                 data[position] = data[position+1]
                 data[position+1] = hold
                 finished = False
-    return data, count
+    return data
 
 stuff = [4,123,6,5,124123,2]
 print("shuttle",shuttle_sort(stuff))
 print("bubble",bubble_sort(stuff))
-
