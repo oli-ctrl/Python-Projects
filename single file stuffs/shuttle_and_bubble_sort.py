@@ -21,21 +21,24 @@ def shuttle_sort (data):
                     finished = False
     return data
 
-def bubble_sort (data):
+def bubble_sort (data_):
     finished = False
     while not finished:
         finished = True
-        for position in range(0, len(data)-1):
-            if data[position] > data [position+1]:
-                hold = data[position]
-                data[position] = data[position+1]
-                data[position+1] = hold
+        for position in range(0, len(data_)-1):
+            if data_[position] > data_ [position+1]:
+                hold = data_[position]
+                data_[position] = data_[position+1]
+                data_[position+1] = hold
                 finished = False
-    return data
+    return data_
 
 
 stuff = []
-for i in range(0,10):
+for i in range(0,10000):
     stuff.append(randint(0,99))
+stuff_2 = stuff
+print("running shuttle")
 print("shuttle",shuttle_sort(stuff))
-print("bubble",bubble_sort(stuff))
+print("running bubble")
+print("bubble",bubble_sort(stuff_2))
