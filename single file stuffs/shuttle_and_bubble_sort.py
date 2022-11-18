@@ -35,9 +35,11 @@ def bubble_sort (data_):
 
 
 stuff = []
-for i in range(0,10000):
+stuff_2 = []
+for i in range(0,25):
     stuff.append(randint(0,99))
-stuff_2 = stuff
+    stuff_2.append(randint(0,99))
+
 print("running shuttle")
 print("shuttle",shuttle_sort(stuff))
 print("running bubble")
