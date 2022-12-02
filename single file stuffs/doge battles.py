@@ -141,4 +141,5 @@ while True:
             break
     ## calls the enemy turn function
     enemy_turn()
+
 input("press enter key to close")
