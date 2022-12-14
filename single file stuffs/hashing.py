@@ -35,6 +35,6 @@ for i in list:
     hashtable(i, ASCIIhash(i, len(list)))
 
 print(hashlist)
-searched = "Victor"
+searched = "Winston"
 
-print (search(searched, (ASCIIhash(searched))))
+print(search(searched, ASCIIhash(searched, len(list))))
