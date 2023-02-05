@@ -6,7 +6,6 @@ window=tk.Tk()
 window.title("Pythagoras calculator")
 window.geometry("450x115")  
 
-
 ## what happens when the reset button is pressed
 def callback_button_reset():
     ent_a.delete(0, tk.END)
@@ -45,10 +44,7 @@ def open_popup(text):
     btn_close.pack()
     popup.mainloop()
 
-
-
 ## __make the objects__
-
 ## make the title
 txt_title = tk.Label(master=window, 
                     text="pythaoras formula calculator",
@@ -68,7 +64,6 @@ btn_reset = tk.Button(master=window, text="reset",bg="orange", height= 3, comman
 btn_quit = tk.Button(master=window, text="quit",  bg="tomato", height= 3, command=window.quit)
 
 ## __place the objects__
-
 ## place the title
 txt_title.grid(row=0, column=0, columnspan=6)
 
@@ -85,10 +80,5 @@ btn_calculate.grid(row=2, column=0, columnspan=2, rowspan=2, sticky=tk.EW)
 btn_reset.grid(row=2, column=2, columnspan=2, rowspan=2, sticky=tk.EW)
 btn_quit.grid(row=2, column=4, columnspan=2, rowspan=2, sticky=tk.EW)
 
-
-
 ##always at the end
 window.mainloop()
-
-
-
