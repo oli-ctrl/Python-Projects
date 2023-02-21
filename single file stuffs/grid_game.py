@@ -1,102 +1,161 @@
 import tkinter as tk
-import random 
+import random
+
+## change these to change the window size.
+width = 5
+height = 4
 
 
+## random global variables
 count = 0
-width = 2
-height = 2
 allbuttons = []
-turn = "None"
-normalsposlast = "None"
+status = "None"
+normalposprev = "None"
+normalpos = "None"
+reset_count = 0 
 
+## list of every possible button, change this to change the amount of buttons, or the text on the buttons
+baselist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
-
-def check_valid(width,height):
+## check if the width and height are valid for the length of the base list given
+def check_valid(width,height,baselist):
+    ## make sure the size of the grid is not bigger than the length of the list * 2 (*2 because each button has a pair)
     multiplied = width * height
-    if multiplied > 52:
+    if multiplied > len(baselist)*2:
         return False
+    ## check if the multiplied number is even
     check = multiplied % 2
     if check == 0:
         return True
     else:
         return False
 
-def generate_list():
-    baselist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+## gen list
+def generate_list(baselist): 
     list = []
     amount = (width * height)/2
+    ## interate through the list twice for the lenght of the amount of buttons needed
     for i in range(0,2):
         for i in range(0,int(amount)):
             list.append(baselist[i])
+    ## shuffle the list
     random.shuffle(list)
     return list
 
+
+# button callback
 def callback_button(position):
-    global turn
+    global normalpos
+    global status
+    global reset_count
+    
+
+    ## only run if the game isnt resetting
+    if status != "reset":
+        ## get normal position (0-...) then set normalpos to this
+        normalposlist = str(position).split("n")
+        if normalposlist[1] == "":
+            normalposlist[1] = 1
+        normalpos = int(normalposlist[1])-1
+
+        ## set the text of the button to its position in the list, then set the game status to check
+        allbuttons[normalpos].config(text=Lists[normalpos])
+        status = "check"
+
+
+def make_window():
+    global count 
+    global Lists
+    global width
+    global height
+    global allbuttons
+    global Lists
+    Lists = []
+    allbuttons = []
+    count = 0 
+    Lists = generate_list(baselist)
+
+
+## check if the width and height specified are valid.
+    if check_valid(width,height,baselist) == False:
+        ## set the window text to invalid width and height and populate it with reset button
+        text = tk.Label(master=window, text="invalid width and height")
+        text.grid(row=0, column=0)
+        button = tk.Button (master=window, text="close", command=window.destroy)
+        button.grid (row=1, column=0)
+        return
+
+    else:
+        ## make the window the correct size for the width and height specified
+        window.geometry("{}x{}".format((width*100), (height*100)))
+        for i in range(width):
+            for j in range(height):
+
+                ## make the button and add it to the grid aswell as giving it a command to run when clicked, and a position for future checks.
+                btn = tk.Button(master=window,state="active" , text="?", height= 6, width=13, bg="white" ,fg="black", command=lambda i=count: callback_button(allbuttons[i]))
+                btn.grid(row=j, column=i, sticky= tk.EW)
+                count += 1
+                ## add the button to a list of all buttons, this is so that it can be checked and change later using the position
+                allbuttons.append(btn)
+        window.after(1000, main_loop)
+        window.mainloop()
+
+## mainloop
+def main_loop():
+    global status
     global normalposprev
+    global normalpos
+    global reset_count
 
-    ## get normal position
-    normalposlist = str(position).split("n")
-    if normalposlist[1] == "":
-        normalposlist[1] = 1
-    normalpos = int(normalposlist[1])-1
+    #print (f"main loop: status: {status} normalpos: {normalpos} normalposprev: {normalposprev}" )
 
-    ## set button text to list
-    allbuttons[normalpos].config(text=Lists[normalpos])
+    ## check the status of the game, do shit depending on that
+    if status == "reset":
+        ## iterate the reset count till it reaches 10 then reset the game
+        reset_count += 1
+        if reset_count > 500:
+            reset_count = 0
+            status = "None"
+            ## run over every button, check if its enabled, if it is then set the text to "?"
+            for i in range(0,len(allbuttons)):
+                if allbuttons[i].cget("state") == "normal":
+                        allbuttons[i].config(text="?")
+       
 
-    ## check if first button
-    if turn == "None":
-        turn = normalpos
-        normalposprev = normalpos
-        
+    elif status == "check":
+        try:
+            ## check if the button clicked is the same as the previous button clicked, if it is then set the status to reset
+            if normalposprev == normalpos:
+                status = "reset"
 
-
-    ## check if same button
-    elif turn != "None":
-        if normalposprev == normalpos:
-            print("same button")
-
-        ## check correct 
-        elif Lists[turn] == Lists[normalpos]:
-            print("correct")
-            allbuttons[normalpos].config(state="disabled", bg="lightgreen", fg="red")
-            allbuttons[turn].config(state="disabled",bg="Lightgreen", fg="red")
-            turn = "None"
+            ## check if the text on the button pushed is the same as the text of the previous button. if it is then disable the button and make it green
+            elif Lists[normalpos] == Lists[normalposprev]:
+                allbuttons[normalpos].config(state="disabled", bg="lightgreen", fg="red")
+                allbuttons[normalposprev].config(state="disabled",bg="Lightgreen", fg="red")
+                status = "none"
+    
+            ## reset the normalpositions.
+            normalpos = "None"
             normalposprev = "None"
-            return
-        else:
-            print("incorrect")
         
-         ## reset turn
-        normalposprev = normalpos
-        turn = "None"
-        for i in range(0,len(allbuttons)):
-            if allbuttons[i].cget("state") == "normal":
-                allbuttons[i].config(text="?")
+        ## this sometimes get called when it tries to use the above function with a normalpos or normal pos prev of none.
+        except:
+            status = "none"
+            normalposprev = normalpos
 
-
-
-        
-if check_valid(width,height) == False:
-    print("invalid width and height")
-    exit()
-
-Lists = generate_list()
+    ## re-add the function to main loop. 
+    window.after(1, main_loop)
 
 
 
 window=tk.Tk()
-window.title("grid game")
-window.geometry("{}x{}".format((width*100), (height*100)))
+window.title("game")
 window.config(bg="white")
 
-for i in range(0,width):
-    for j in range(0,height):
-        btn = tk.Button(master=window,state="active" , text="?", height= 6, width=13, bg="white" ,fg="black", command=lambda i=count: callback_button(allbuttons[i]))
-        btn.grid(row=j, column=i, sticky= tk.EW)
-        count += 1
-        allbuttons.append(btn)
-        
+print("make window")
+make_window()
+
+
+
 
 window.mainloop()
-
