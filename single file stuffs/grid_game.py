@@ -32,7 +32,7 @@ def check_valid(width,height,baselist):
     else:
         return False
 
-## gen list
+## generate list of 2x each item
 def generate_list(baselist): 
     list = []
     amount = (width * height)/2
@@ -43,7 +43,6 @@ def generate_list(baselist):
     ## shuffle the list
     random.shuffle(list)
     return list
-
 
 # button callback
 def callback_button(position):
@@ -64,10 +63,12 @@ def callback_button(position):
         allbuttons[normalpos].config(text=Lists[normalpos])
         status = "check"
 
+## used by make window to shuffle the base list
 def shuffle():
     global baselist
     random.shuffle(baselist)
 
+## make window and lists
 def make_window():
     global count 
     global Lists
@@ -78,13 +79,11 @@ def make_window():
     Lists = []
     allbuttons = []
     count = 0 
-    ## shuffle the base list so later elements have a chance of showing up commonly.
+    ## shuffle the base list so later elements have a chance of showing up commonly, then generate the list
     shuffle()
-    ## generate the list of buttons
     Lists = generate_list(baselist)
 
-
-## check if the width and height specified are valid.
+    ## check if the width and height specified are valid.
     if check_valid(width,height,baselist) == False:
         ## set the window text to invalid width and height and populate it with reset button
         text = tk.Label(master=window, text="invalid width and height")
@@ -92,13 +91,11 @@ def make_window():
         button = tk.Button (master=window, text="close", command=window.destroy)
         button.grid (row=1, column=0)
         return
-
     else:
         ## make the window the correct size for the width and height specified
         window.geometry("{}x{}".format((width*100), (height*100)))
         for i in range(width):
             for j in range(height):
-
                 ## make the button and add it to the grid aswell as giving it a command to run when clicked, and a position for future checks.
                 btn = tk.Button(master=window,state="active" , text="?", height= 6, width=13, bg="white" ,fg="black", command=lambda i=count: callback_button(allbuttons[i]))
                 btn.grid(row=j, column=i, sticky= tk.EW)
@@ -114,12 +111,12 @@ def main_loop():
     global normalposprev
     global normalpos
     global reset_count
-
+    
+    ## used for debugging
     #print (f"main loop: status: {status} normalpos: {normalpos} normalposprev: {normalposprev}" )
 
-    ## check the status of the game, do shit depending on that
-    if status == "reset":
-        ## iterate the reset count till it reaches 10 then reset the game
+    if status == "reset":   ## reset all enabled buttons to "?"
+        ## iterate the reset count till it reaches 500 then reset the game 
         reset_count += 1
         if reset_count > 500:
             reset_count = 0
@@ -130,7 +127,7 @@ def main_loop():
                         allbuttons[i].config(text="?")
        
 
-    elif status == "check":
+    elif status == "check": ## if the status is check, do stuff to see if it is a match
         try:
             ## check if the button clicked is the same as the previous button clicked, if it is then set the status to reset
             if normalposprev == normalpos:
@@ -154,14 +151,10 @@ def main_loop():
     ## re-add the function to main loop. 
     window.after(1, main_loop)
 
-
-
+## make window and give it tittle
 window=tk.Tk()
 window.title("grid game (REAL)")
-window.config(bg="white")
-
+## calls the make window function
 make_window()
-
-
 
 window.mainloop()
