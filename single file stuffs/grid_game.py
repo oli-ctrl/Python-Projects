@@ -15,7 +15,9 @@ normalpos = "None"
 reset_count = 0 
 
 ## list of every possible button, change this to change the amount of buttons, or the text on the buttons
-baselist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+baselist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+
 
 ## check if the width and height are valid for the length of the base list given
 def check_valid(width,height,baselist):
@@ -62,6 +64,9 @@ def callback_button(position):
         allbuttons[normalpos].config(text=Lists[normalpos])
         status = "check"
 
+def shuffle():
+    global baselist
+    random.shuffle(baselist)
 
 def make_window():
     global count 
@@ -73,6 +78,9 @@ def make_window():
     Lists = []
     allbuttons = []
     count = 0 
+    ## shuffle the base list so later elements have a chance of showing up commonly.
+    shuffle()
+    ## generate the list of buttons
     Lists = generate_list(baselist)
 
 
