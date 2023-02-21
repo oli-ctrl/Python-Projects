@@ -157,12 +157,10 @@ def main_loop():
 
 
 window=tk.Tk()
-window.title("game")
+window.title("grid game (REAL)")
 window.config(bg="white")
 
-print("make window")
 make_window()
-
 
 
 
