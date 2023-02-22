@@ -17,6 +17,5 @@ def Counting_sort(data):
 
 
 
-
 stuff = [23,42,2,2,4,5,41212,6,7,6,7,4,5,6,9]
 print(Counting_sort(stuff))

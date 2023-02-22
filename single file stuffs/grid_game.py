@@ -2,8 +2,8 @@ import tkinter as tk
 import random
 
 ## change these to change the window size.
-width = 5
-height = 4
+width = 4
+height = 3
 
 
 ## random global variables
@@ -13,6 +13,7 @@ status = "None"
 normalposprev = "None"
 normalpos = "None"
 reset_count = 0 
+log_count = 0
 
 ## list of every possible button, change this to change the amount of buttons, or the text on the buttons
 baselist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
@@ -49,6 +50,8 @@ def callback_button(position):
     global normalpos
     global status
     global reset_count
+    global log_count
+    log_count = 600
     
 
     ## only run if the game isnt resetting
@@ -76,6 +79,7 @@ def make_window():
     global height
     global allbuttons
     global Lists
+    
     Lists = []
     allbuttons = []
     count = 0 
@@ -97,7 +101,7 @@ def make_window():
         for i in range(width):
             for j in range(height):
                 ## make the button and add it to the grid aswell as giving it a command to run when clicked, and a position for future checks.
-                btn = tk.Button(master=window,state="active" , text="?", height= 6, width=13, bg="white" ,fg="black", command=lambda i=count: callback_button(allbuttons[i]))
+                btn = tk.Button(master=window,state="active" , text="?", height= 6, width=13 ,fg="black", command=lambda i=count: callback_button(allbuttons[i]))
                 btn.grid(row=j, column=i, sticky= tk.EW)
                 count += 1
                 ## add the button to a list of all buttons, this is so that it can be checked and change later using the position
@@ -111,14 +115,17 @@ def main_loop():
     global normalposprev
     global normalpos
     global reset_count
-    
+    global log_count
     ## used for debugging
-    #print (f"main loop: status: {status} normalpos: {normalpos} normalposprev: {normalposprev}" )
+    log_count += 1 
+    if log_count > 500:
+        print(f"main loop: status: {status} normalpos: {normalpos} normalposprev: {normalposprev}" )
+        log_count = 0
 
     if status == "reset":   ## reset all enabled buttons to "?"
         ## iterate the reset count till it reaches 500 then reset the game 
         reset_count += 1
-        if reset_count > 500:
+        if reset_count > 600:
             reset_count = 0
             status = "None"
             ## run over every button, check if its enabled, if it is then set the text to "?"
