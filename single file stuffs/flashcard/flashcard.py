@@ -89,7 +89,8 @@ class Flashcard():
         content = json.loads(file.read())
         print (content["descripton"])
         print (content["flashcards"][0]["question"])
-        print (content["flashcards"][0]["answer"])
+        print (content["flashcards"][0]["model_answer"])
+        
         
         
     

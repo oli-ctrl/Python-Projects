@@ -3,11 +3,13 @@
     "flashcards":[
         {
             "question": "What is 3+3",
-            "answer": "6"
+            "model_answer": "6",
+            "accepted_answers": ["6", "six", "Six"]
         },
         {
             "question": "What is 3+4",
-            "answer": "7"
+            "model_answer": "7",
+            "accepted_answers": ["7", "seven", "Seven"]
         }
     ] 
 }
