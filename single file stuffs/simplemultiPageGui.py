@@ -9,67 +9,56 @@ class app():
 
         self.current_page = "home"
         self.pages = {"home": self.home, "page1": self.page1, "page2": self.page2}
+        self.current_items = []
 
 
         self.change_page("home")
 
     def change_page(self, page):
-        self.pages[self.current_page]("yes")
+        self.destroy()
         self.pages[page]()
         self.current_page = page
-        
 
-    def home(self, destroy="no"):
-        if destroy != "yes":
-            self.title =tk.Label(self.root, text="home page")
-            self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
-            self.pg_2  =tk.Button(self.root, text="page 2", command=lambda: self.change_page("page2"))
-            self.title.place(x=0, y=0)
-            self.pg_1.place(x=0, y=20)
-            self.pg_2.place(x=0, y=40)
-            return
-        try:
-            print("destroying")
-            self.title.place_forget()
-            self.pg_1.place_forget()
-            self.pg_2.place_forget()
-        except:
-            print ("ui does not exist")
+
+    def destroy(self):
+        for i in self.current_items:
+            for button in i:
+                button.place_forget()
+        self.current_items = []
+
+    def home(self):
+        self.title =tk.Label(self.root, text="home page")
+        self.bt_home =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
+        self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
+        self.pg_2  =tk.Button(self.root, text="page 2", command=lambda: self.change_page("page2"))
+        self.title.place(x=0, y=0)
+        self.bt_home.place(x=0, y=40)
+        self.pg_1.place(x=60, y=40)
+        self.pg_2.place(x=120, y=40)
+        self.current_items.append([self.title,self.bt_home,self.pg_1,self.pg_2])
+
 
     def page1(self, destroy="no"):
-        if destroy != "yes":
-            self.title =tk.Label(self.root, text="page 1")
-            self.pg_1  =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
-            self.pg_2  =tk.Button(self.root, text="page 2", command=lambda: self.change_page("page2"))
-            self.title.place(x=0, y=0)
-            self.pg_1.place(x=0, y=20)
-            self.pg_2.place(x=0, y=40)
-            return        
-        try:
-            print("destroying")
-            self.title.place_forget()
-            self.pg_1.place_forget()
-            self.pg_2.place_forget()
-        except:
-            print ("ui does not exist")
+        self.title =tk.Label(self.root, text="page 1")
+        self.bt_home =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
+        self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
+        self.pg_2  =tk.Button(self.root, text="page 2", command=lambda: self.change_page("page2"))
+        self.title.place(x=0, y=0)
+        self.bt_home.place(x=0, y=40)
+        self.pg_1.place(x=60, y=40)
+        self.pg_2.place(x=120, y=40)
+        self.current_items.append([self.title,self.bt_home,self.pg_1,self.pg_2])
 
     def page2(self, destroy="no"):
-        if destroy != "yes":
-            self.title =tk.Label(self.root, text="page 2")
-            self.pg_1  =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
-            self.pg_2  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
-            self.title.place(x=0, y=0)
-            self.pg_1.place(x=0, y=20)
-            self.pg_2.place(x=0, y=40)
-            return
-        try:
-            print("destroying")
-            self.title.place_forget()
-            self.pg_1.place_forget()
-            self.pg_2.place_forget()
-        except:
-            print ("ui does not exist")
-    
+        self.title =tk.Label(self.root, text="page 2")
+        self.bt_home =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
+        self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
+        self.pg_2  =tk.Button(self.root, text="page 2", command=lambda: self.change_page("page2"))
+        self.title.place(x=0, y=0)
+        self.bt_home.place(x=0, y=40)
+        self.pg_1.place(x=60, y=40)
+        self.pg_2.place(x=120, y=40)
+        self.current_items.append([self.title,self.bt_home,self.pg_1,self.pg_2])
 
 test=app()
 
