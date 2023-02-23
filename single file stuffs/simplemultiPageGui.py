@@ -8,6 +8,8 @@ class app():
         self.root.title("multipage gui")
 
         self.current_page = "home"
+
+        ## dict of pages linking to the page functions
         self.pages = {"home": self.home, "page1": self.page1, "page2": self.page2}
         self.current_items = []
 
@@ -38,7 +40,7 @@ class app():
         self.current_items.append([self.title,self.bt_home,self.pg_1,self.pg_2])
 
 
-    def page1(self, destroy="no"):
+    def page1(self):
         self.title =tk.Label(self.root, text="page 1")
         self.bt_home =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
         self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))
@@ -49,7 +51,7 @@ class app():
         self.pg_2.place(x=120, y=40)
         self.current_items.append([self.title,self.bt_home,self.pg_1,self.pg_2])
 
-    def page2(self, destroy="no"):
+    def page2(self):
         self.title =tk.Label(self.root, text="page 2")
         self.bt_home =tk.Button(self.root, text="home", command=lambda: self.change_page("home"))
         self.pg_1  =tk.Button(self.root, text="page 1", command=lambda: self.change_page("page1"))

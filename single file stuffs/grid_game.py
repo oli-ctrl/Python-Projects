@@ -2,8 +2,8 @@ import tkinter as tk
 import random
 
 ## change these to change the window size.
-width = 4
-height = 3
+width = 8
+height = 6
 
 
 ## random global variables
