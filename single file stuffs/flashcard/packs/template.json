@@ -1,0 +1,13 @@
+{
+    "descripton": "The test flashcard pack",
+    "flashcards":[
+        {
+            "question": "What is 3+3",
+            "answer": "6"
+        },
+        {
+            "question": "What is 3+4",
+            "answer": "7"
+        }
+    ] 
+}
