@@ -1,0 +1,15 @@
+{
+    "descripton": "The test flashcard pack",
+    "flashcards":[
+        {
+            "question": "What is 3+3",
+            "model_answer": "6",
+            "accepted_answers": ["6", "six", "Six"]
+        },
+        {
+            "question": "What is 3+4",
+            "model_answer": "7",
+            "accepted_answers": ["7", "seven", "Seven"]
+        }
+    ] 
+}
