@@ -19,7 +19,12 @@ class Flashcard():
         self.listbox_selection = None
         
 
-        self.pages = {"home": self.home, "pack_select": self.pack_select, "pack_view": self.pack_view, "pack_create": self.pack_create, "pack_delete": self.pack_delete}
+        self.pages = {"home": self.home, 
+                      "pack_select": self.pack_select, 
+                      "pack_view": self.pack_view, 
+                      "pack_create": self.pack_create, 
+                      "pack_delete": self.pack_delete, 
+                      "pack_edit":self.pack_edit}
         self.current_items = []
 
 
@@ -75,8 +80,7 @@ class Flashcard():
         self.title =tk.Label(self.root, text="Pack select", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
         self.text  =tk.Label(self.root, text="This is the Pack selection, you can Open already created packs here", width=70, height=3, font=("Helvetica", 10))
 
-        self.title.grid(row=0, column=0, sticky="nsew")
-        self.text.grid (row=1, column=0, sticky="nsew")
+
 
         self.homebutton = tk.Button(self.root, text="home", command=lambda: self.change_page("home"), width=20)
         self.homebutton.place(y=375)
@@ -88,12 +92,22 @@ class Flashcard():
         for i in dir:
             text = i.split(".")
             self.listbox.insert("end", text[0])
+
+        ## if select is true, then the user is selecting a pack to open, if false, then the user is selecting a pack to edit
         if select:
             self.open_button = tk.Button(self.root, text="open", command=lambda: self.change_page("pack_view", f"{self.listbox.get(tk.ANCHOR)}.json"), width=20)
-            self.open_button.grid(column=0, row=4, rowspan=2, sticky="nesw")
+            self.title =tk.Label(self.root, text="Pack select", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+            self.text  =tk.Label(self.root, text="This is the Pack selection, you can Open already created packs here", width=70, height=3, font=("Helvetica", 10))
         else:
             self.open_button = tk.Button(self.root, text="Edit", command=lambda: self.change_page("pack_edit", f"{self.listbox.get(tk.ANCHOR)}.json"), width=20)
-            self.open_button.grid(column=0, row=4, rowspan=2, sticky="nesw")
+            self.title =tk.Label(self.root, text="Pack edit", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+            self.text  =tk.Label(self.root, text="This is the Pack edit, you can edit already created packs here", width=70, height=3, font=("Helvetica", 10))
+
+
+
+        self.open_button.grid(column=0, row=5, rowspan=2, sticky="nesw")
+        self.title.grid(row=0, column=0, sticky="nsew")
+        self.text.grid (row=1, column=0, sticky="nsew")
 
 
 
@@ -102,17 +116,35 @@ class Flashcard():
         self.current_items.append([self.listbox, self.open_button, self.homebutton, self.title, self.text])
 
     def pack_view(self, filename):
-        print(f"pack_view:  {filename}")
-
         if filename == ".json":
             print ("file not found")
-            self.change_page("pack_select")
+            self.change_page("pack_select", True)
             return
         file = open(f"{path}{filename}", "r")
         content = json.loads(file.read())
-        print (content["descripton"])
+
+        ## set the title to the file name
+        self.title =tk.Label(self.root, text= filename.split(".")[0] , width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+        
+        ## get the packs description
+        self.text  =tk.Label(self.root, text=content["descripton"], width=70, height=3, font=("Helvetica", 10))
+
+        self.title.grid(row=0, column=0, sticky="nsew")
+        self.text.grid (row=1, column=0, sticky="nsew")
+
+        self.homebutton = tk.Button(self.root, text="home", command=lambda: self.change_page("home"), width=20)
+        self.homebutton.place(y=375)
+
+        self.question_box = tk.Label(self.root, height= 10, width=25, text= content["flashcards"][self.current_card]["question"] )
+        self.question_box.grid(column=0,row=2,rowspan=1,columnspan=1 ,sticky="nsew")
+
+        self.answer_box = tk.Text(self.root, height= 10, width=25 )
+        self.answer_box.grid(column=1,row=2,rowspan=1, columnspan=1, sticky="nsew")
+
         print (content["flashcards"][self.current_card]["question"])
+
         print (content["flashcards"][self.current_card]["model_answer"])
+
         print (content["flashcards"][self.current_card]["accepted_answers"])
         
     def pack_create(self):
