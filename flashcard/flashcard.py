@@ -125,26 +125,32 @@ class Flashcard():
 
         ## set the title to the file name
         self.title =tk.Label(self.root, text= filename.split(".")[0] , width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+        self.title.grid(row=0, column=0, sticky="nsew")
         
         ## get the packs description
         self.text  =tk.Label(self.root, text=content["descripton"], width=70, height=3, font=("Helvetica", 10))
-
-        self.title.grid(row=0, column=0, sticky="nsew")
         self.text.grid (row=1, column=0, sticky="nsew")
-
+        
+        ## create the home button
         self.homebutton = tk.Button(self.root, text="home", command=lambda: self.change_page("home"), width=20)
         self.homebutton.place(y=375)
 
+
+
+
         self.question_box = tk.Label(self.root, height= 10, width=25, text= content["flashcards"][self.current_card]["question"] )
-        self.question_box.grid(column=0,row=2,rowspan=1,columnspan=1 ,sticky="nsew")
+        self.question_box.place(x=50, y=150)
 
-        self.answer_box = tk.Text(self.root, height= 10, width=25 )
-        self.answer_box.grid(column=1,row=2,rowspan=1, columnspan=1, sticky="nsew")
+        self.answer_box = tk.Text(self.root, height= 10, width=20 )
+        self.answer_box.place(x=250, y=150)
+        self.submit_button = tk.Button(self.root, text="submit", command=lambda: self.check_answer(content["flashcards"][self.current_card]["accepted_answers"]), width=22, height=1)
+        self.submit_button.place(x=250, y=300)
+        ## add to current items so it can be destroyed
+        self.current_items.append([self.question_box, self.answer_box, self.homebutton, self.title, self.text, self.submit_button])
 
+        ## testing 
         print (content["flashcards"][self.current_card]["question"])
-
         print (content["flashcards"][self.current_card]["model_answer"])
-
         print (content["flashcards"][self.current_card]["accepted_answers"])
         
     def pack_create(self):
