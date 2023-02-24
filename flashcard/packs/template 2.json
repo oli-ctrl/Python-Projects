@@ -1,0 +1,15 @@
+{
+    "descripton": "The test flashcard pack BUT THE SECOND ONE :O",
+    "flashcards":[
+        {
+            "question": "What is 6+6",
+            "model_answer": "12",
+            "accepted_answers": ["12", "twelve", "Twelve"]
+        },
+        {
+            "question": "What is 3+4",
+            "model_answer": "7",
+            "accepted_answers": ["7", "seven", "Seven"]
+        }
+    ] 
+}
