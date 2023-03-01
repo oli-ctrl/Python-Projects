@@ -4,9 +4,12 @@ import os
 from pathlib import Path
 
 path = Path.cwd()
+print(os.listdir(path))
+if os.listdir(path) == 1:
+    print("test")
+
 path = f"{(path)}/flashcard/packs/"
 dir = os.listdir(path)
-print (dir)
 
 
 class Flashcard():
@@ -25,11 +28,11 @@ class Flashcard():
                       "pack_create": self.pack_create, 
                       "pack_delete": self.pack_delete, 
                       "pack_edit":self.pack_edit}
+        
+        
         self.current_items = []
 
-
-        print (dir)
-        print (path)
+        print (f"getting packs from:  {path}")
         self.current_page = "home"
         self.change_page("home")
 
@@ -39,16 +42,14 @@ class Flashcard():
                 item.place_forget()
                 item.grid_forget()
                 item.pack_forget()
-        self.current_items = []
+        self.current_items = [] 
 
     def change_page(self, page, commands=None):
         self.destroy()
 
         if commands != None:
-            print(f"page has command, passing {page}, {commands}")
             self.pages[page](commands)
         else:
-            print(f"page has no command  {page}, {commands}")
             self.pages[page]()
         self.current_page = page
 
@@ -148,11 +149,23 @@ class Flashcard():
         ## add to current items so it can be destroyed
         self.current_items.append([self.question_box, self.answer_box, self.homebutton, self.title, self.text, self.submit_button])
 
+
         ## testing 
-        print (content["flashcards"][self.current_card]["question"])
-        print (content["flashcards"][self.current_card]["model_answer"])
-        print (content["flashcards"][self.current_card]["accepted_answers"])
+        #print (content["flashcards"][self.current_card]["question"])
+        #print (content["flashcards"][self.current_card]["model_answer"])
+        #print (content["flashcards"][self.current_card]["accepted_answers"])
         
+
+    def check_answer(self, accepted_answers):
+        answer = self.answer_box.get("1.0", "end-1c").strip()
+        
+        if answer in accepted_answers:
+            ## add ui to next page
+            print ("correct")
+        else:
+            ## add ui to for option to add to accepted answers and retry
+            print ("incorrect")
+
     def pack_create(self):
         print ("pack_create")
 
