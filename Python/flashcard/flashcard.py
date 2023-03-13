@@ -5,10 +5,8 @@ from pathlib import Path
 
 path = Path.cwd()
 print(os.listdir(path))
-if os.listdir(path) == 1:
-    print("test")
 
-path = f"{(path)}/flashcard/packs/"
+path = f"{(path)}/Python/flashcard/packs/"
 dir = os.listdir(path)
 
 
@@ -20,14 +18,15 @@ class Flashcard():
         self.root.grid_columnconfigure(3, weight=2)
         self.current_card = 0
         self.listbox_selection = None
+        self.current_file = None
         
 
-        self.pages = {"home": self.home, 
-                      "pack_select": self.pack_select, 
-                      "pack_view": self.pack_view, 
-                      "pack_create": self.pack_create, 
-                      "pack_delete": self.pack_delete, 
-                      "pack_edit":self.pack_edit}
+        self.pages = {"home":         self.home, 
+                      "pack_select":  self.pack_select, 
+                      "pack_view":    self.pack_view, 
+                      "pack_create":  self.pack_create, 
+                      "pack_delete":  self.pack_delete, 
+                      "pack_edit":    self.pack_edit}
         
         
         self.current_items = []
@@ -58,19 +57,20 @@ class Flashcard():
     def home(self):
         self.title =tk.Label(self.root, text="home page", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
         self.text  =tk.Label(self.root, text="This is the home page, you can choose to view your flashcard packs or create a new one", width=70, height=3, font=("Helvetica", 10))
-
+        self.current_card = 0
+        self.current_file = None
 
         self.bt_edit_pack     =tk.Button(self.root, text="edit packs",      command=lambda: self.change_page("pack_select",False), width=20)
         self.flashcard_packs  =tk.Button(self.root, text="flashcard packs", command=lambda: self.change_page("pack_select", True), width=20)
         self.bt_new_pack      =tk.Button(self.root, text="new pack",        command=lambda: self.change_page("pack_create"),       width=20)
 
 
-        self.title.grid(row=0, column=0, sticky="nsew")
-        self.text.grid (row=1, column=0, sticky="nsew")
+        self.title.grid (row=0, column=0, sticky="nsew")
+        self.text.grid  (row=1, column=0, sticky="nsew")
 
-        self.flashcard_packs.grid(row=4, column=0, sticky="nsew")
-        self.bt_edit_pack.grid   (row=5, column=0, sticky="nsew")
-        self.bt_new_pack.grid    (row=6, column=0, sticky="nsew")
+        self.flashcard_packs.grid (row=4, column=0, sticky="nsew")
+        self.bt_edit_pack.grid    (row=5, column=0, sticky="nsew")
+        self.bt_new_pack.grid     (row=6, column=0, sticky="nsew")
 
         
 
@@ -106,9 +106,9 @@ class Flashcard():
 
 
 
-        self.open_button.grid(column=0, row=5, rowspan=2, sticky="nesw")
-        self.title.grid(row=0, column=0, sticky="nsew")
-        self.text.grid (row=1, column=0, sticky="nsew")
+        self.open_button.grid (column=0, row=5, rowspan=2, sticky="nesw")
+        self.title.grid       (row=0, column=0, sticky="nsew")
+        self.text.grid        (row=1, column=0, sticky="nsew")
 
 
 
@@ -121,20 +121,24 @@ class Flashcard():
             print ("file not found")
             self.change_page("pack_select", True)
             return
+        self.current_file = filename
         file = open(f"{path}{filename}", "r")
         content = json.loads(file.read())
 
         ## set the title to the file name
-        self.title =tk.Label(self.root, text= filename.split(".")[0] , width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
-        self.title.grid(row=0, column=0, sticky="nsew")
+        self.title =tk.Label (self.root, text= filename.split(".")[0] , width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+        self.title.grid      (row=0, column=0, sticky="nsew")
         
         ## get the packs description
-        self.text  =tk.Label(self.root, text=content["descripton"], width=70, height=3, font=("Helvetica", 10))
-        self.text.grid (row=1, column=0, sticky="nsew")
+        self.text  =tk.Label (self.root, text=content["descripton"], width=70, height=3, font=("Helvetica", 10))
+        self.text.grid       (row=1, column=0, sticky="nsew")
         
+        self.question_number = tk.Label(self.root, text=f"Question {self.current_card+1} of {len(content['flashcards'])}", width=20, height=2, font=("Helvetica", 10), background="grey")
+        self.question_number.place (x=0, y=0)
+
         ## create the home button
-        self.homebutton = tk.Button(self.root, text="home", command=lambda: self.change_page("home"), width=20)
-        self.homebutton.place(y=375)
+        self.homebutton = tk.Button (self.root, text="home", command=lambda: self.change_page("home"), width=20)
+        self.homebutton.place       (y=375)
 
 
 
@@ -147,24 +151,44 @@ class Flashcard():
         self.submit_button = tk.Button(self.root, text="submit", command=lambda: self.check_answer(content["flashcards"][self.current_card]["accepted_answers"]), width=22, height=1)
         self.submit_button.place(x=250, y=300)
         ## add to current items so it can be destroyed
-        self.current_items.append([self.question_box, self.answer_box, self.homebutton, self.title, self.text, self.submit_button])
+        
 
+        self.next_button = tk.Button(self.root, text="next", command=lambda: self.change_card(True), width=22, height=1)
+        self.next_button.place(x=400, y=375)
+        self.previous_button = tk.Button(self.root, text="previous", command=lambda: self.change_card(False), width=22, height=1)
+        self.previous_button.place(x=250, y=375)
+
+        if self.current_card == 0:
+            self.previous_button.config(state="disabled")
+        if self.current_card == len(content["flashcards"])-1:
+            self.next_button.config(state="disabled")
+
+        self.current_items.append([self.question_box, self.answer_box, self.homebutton, self.title, self.text, self.submit_button, self.next_button, self.previous_button, self.question_number])
 
         ## testing 
         #print (content["flashcards"][self.current_card]["question"])
         #print (content["flashcards"][self.current_card]["model_answer"])
         #print (content["flashcards"][self.current_card]["accepted_answers"])
-        
+
+    def change_card(self, next):
+        if next:
+            self.current_card += 1
+        else:
+            self.current_card -= 1
+
+        self.change_page("pack_view",self.current_file)
 
     def check_answer(self, accepted_answers):
-        answer = self.answer_box.get("1.0", "end-1c").strip()
+        answer = self.answer_box.get("1.0", "end-1c").strip().lower()
+        print (answer)
         
         if answer in accepted_answers:
             ## add ui to next page
-            print ("correct")
+            self.answer_box.config(background="green")
         else:
             ## add ui to for option to add to accepted answers and retry
-            print ("incorrect")
+            self.answer_box.config(background="red")
+
 
     def pack_create(self):
         print ("pack_create")

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Quiz</title>
+    <style>
+        .questionbox{
+            border: 1px solid black;
+            background-color: solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+        .hinttext{color:rgb(0, 255, 0);}
+    
+    </style>
+    <script>
+        function showHide() {
+            var elmnt = document.getElementById("hint_1");
+            var text = elmnt.innerHTML;
+            console.log(elmnt.innerHTML)
+
+            if (text === "...") {
+                elmnt.innerHTML = "The city of romance";
+            }
+            else {
+                elmnt.innerHTML = "...";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1 align="center">My Quiz</h1>
+
+    <div class="questionbox">
+        <h2>Question 1</h2>
+        <p>What is the capital of France?</p>
+        <form>your answer: <input type="text"></form>
+        <button onclick= "showHide()"></buttononclick> Show/Hide Hint</button>
+        <div id ="hint_1" class = hinttext>...</div>
+    </div>
+</body>
+</html>
