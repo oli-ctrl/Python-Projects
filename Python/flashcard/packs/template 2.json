@@ -4,12 +4,12 @@
         {
             "question": "What is 6+6",
             "model_answer": "12",
-            "accepted_answers": ["12", "twelve", "Twelve"]
+            "accepted_answers": ["12", "twelve"]
         },
         {
             "question": "What is 3+4",
             "model_answer": "7",
-            "accepted_answers": ["7", "seven", "Seven"]
+            "accepted_answers": ["7", "seven"]
         }
     ] 
 }
