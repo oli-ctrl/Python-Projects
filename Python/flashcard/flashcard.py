@@ -60,8 +60,8 @@ class Flashcard():
         self.current_card = 0
         self.current_file = None
 
-        self.bt_edit_pack     =tk.Button(self.root, text="edit packs",      command=lambda: self.change_page("pack_select",False), width=20)
-        self.flashcard_packs  =tk.Button(self.root, text="flashcard packs", command=lambda: self.change_page("pack_select", True), width=20)
+        self.bt_edit_pack     =tk.Button(self.root, text="edit packs",      command=lambda: self.change_page("pack_select","Edit"), width=20)
+        self.flashcard_packs  =tk.Button(self.root, text="flashcard packs", command=lambda: self.change_page("pack_select", "View"), width=20)
         self.bt_new_pack      =tk.Button(self.root, text="new pack",        command=lambda: self.change_page("pack_create"),       width=20)
 
 
@@ -95,16 +95,14 @@ class Flashcard():
             self.listbox.insert("end", text[0])
 
         ## if select is true, then the user is selecting a pack to open, if false, then the user is selecting a pack to edit
-        if select:
+        if select == "View":
             self.open_button = tk.Button(self.root, text="open", command=lambda: self.change_page("pack_view", f"{self.listbox.get(tk.ANCHOR)}.json"), width=20)
             self.title =tk.Label(self.root, text="Pack select", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
             self.text  =tk.Label(self.root, text="This is the Pack selection, you can Open already created packs here", width=70, height=3, font=("Helvetica", 10))
-        else:
+        elif select == "Edit": 
             self.open_button = tk.Button(self.root, text="Edit", command=lambda: self.change_page("pack_edit", f"{self.listbox.get(tk.ANCHOR)}.json"), width=20)
             self.title =tk.Label(self.root, text="Pack edit", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
             self.text  =tk.Label(self.root, text="This is the Pack edit, you can edit already created packs here", width=70, height=3, font=("Helvetica", 10))
-
-
 
         self.open_button.grid (column=0, row=5, rowspan=2, sticky="nesw")
         self.title.grid       (row=0, column=0, sticky="nsew")
@@ -197,7 +195,8 @@ class Flashcard():
         print ("pack_edit")
 
     def pack_delete(self, file_name):
-        print ("pack_delete")
+        print("pack_delete")
+        
 
 
 
