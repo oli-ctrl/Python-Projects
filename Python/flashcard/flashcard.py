@@ -115,10 +115,13 @@ class Flashcard():
         self.current_items.append([self.listbox, self.open_button, self.homebutton, self.title, self.text])
 
     def pack_view(self, filename):
+        ## ___get the file content__
+        ## if the file is not found, then return to the pack select page
         if filename == ".json":
             print ("file not found")
             self.change_page("pack_select", True)
             return
+        ## set the current file to the file name, then use json to convert the file to a library
         self.current_file = filename
         file = open(f"{path}{filename}", "r")
         content = json.loads(file.read())
@@ -138,29 +141,31 @@ class Flashcard():
         self.homebutton = tk.Button (self.root, text="home", command=lambda: self.change_page("home"), width=20)
         self.homebutton.place       (y=375)
 
-
-
-
+        ## question box
         self.question_box = tk.Label(self.root, height= 10, width=25, text= content["flashcards"][self.current_card]["question"] )
         self.question_box.place(x=50, y=150)
 
+        ## answer box
         self.answer_box = tk.Text(self.root, height= 10, width=20 )
         self.answer_box.place(x=250, y=150)
+
+        ## submit button
         self.submit_button = tk.Button(self.root, text="submit", command=lambda: self.check_answer(content["flashcards"][self.current_card]["accepted_answers"]), width=22, height=1)
         self.submit_button.place(x=250, y=300)
-        ## add to current items so it can be destroyed
         
-
+        ## next and previous buttons
         self.next_button = tk.Button(self.root, text="next", command=lambda: self.change_card(True), width=22, height=1)
         self.next_button.place(x=400, y=375)
         self.previous_button = tk.Button(self.root, text="previous", command=lambda: self.change_card(False), width=22, height=1)
         self.previous_button.place(x=250, y=375)
 
+        ## disable and enable the next/prev buttons depending on the position in the pack
         if self.current_card == 0:
             self.previous_button.config(state="disabled")
         if self.current_card == len(content["flashcards"])-1:
             self.next_button.config(state="disabled")
 
+        ## append to current items for removal
         self.current_items.append([self.question_box, self.answer_box, self.homebutton, self.title, self.text, self.submit_button, self.next_button, self.previous_button, self.question_number])
 
         ## testing 
@@ -169,6 +174,7 @@ class Flashcard():
         #print (content["flashcards"][self.current_card]["accepted_answers"])
 
     def change_card(self, next):
+        ## change card
         if next:
             self.current_card += 1
         else:
@@ -177,25 +183,59 @@ class Flashcard():
         self.change_page("pack_view",self.current_file)
 
     def check_answer(self, accepted_answers):
+        ## get the input from the answer box
         answer = self.answer_box.get("1.0", "end-1c").strip().lower()
-        print (answer)
-        
+
+        ## check if the answer is in the accepted answers
         if answer in accepted_answers:
-            ## add ui to next page
-            self.answer_box.config(background="green")
+            ## set the answer box to green
+            self.answer_box.config(background="light green")
         else:
-            ## add ui to for option to add to accepted answers and retry
-            self.answer_box.config(background="red")
+            ## set the answer box to red
+            self.answer_box.config(background="pink")
 
 
     def pack_create(self):
         print ("pack_create")
 
     def pack_edit(self, filename):
-        print ("pack_edit")
+        if filename == ".json":
+            print ("file not found")
+            self.change_page("pack_select", True)
+            return
+        self.current_file = filename
+        file = open(f"{path}{filename}", "r")
+        content = json.loads(file.read())
 
-    def pack_delete(self, file_name):
-        print("pack_delete")
+
+        self.homebutton = tk.Button (self.root, text="home", command=lambda: self.change_page("home"), width=20)
+        self.homebutton.place       (y=375)
+
+        self.title =tk.Label (self.root, text= filename.split(".")[0] , width=34, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
+        self.title.grid      (row=0, column=0, sticky="nsew")
+
+
+        self.description = tk.Text(self.root, width=34, height=5, font=("Helvetica", 10),bg="light Grey", fg="black")
+        self.description.insert("1.0", content["descripton"])
+        self.description.grid(row=1, column=0, sticky="nsew")
+
+        self.listbox = tk.Listbox(self.root, width=34, height=10, font=("Helvetica", 10),bg="light Grey", fg="black")
+        self.listbox.grid(row=2, column=0, sticky="nsew")
+        for i in content["flashcards"]:
+            self.listbox.insert("end", f"{i['question']}")
+
+        self.remove_button = tk.Button(self.root, text="Remove Question", command=lambda: self.question_delete(filename, self.listbox.curselection()[0]), width=20)
+        self.remove_button.grid(row=3, column=0, sticky="nsew")
+
+
+        self.current_items.append([self.homebutton, self.description, self.listbox, self.title, self.remove_button])
+    
+    def question_delete(self, filename, i):
+        print("question_delete", filename, i)
+        self.change_page("pack_edit", filename)
+
+    def pack_delete(self, filename):
+        print("pack_delete", filename)
         
 
 
