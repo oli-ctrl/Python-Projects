@@ -103,7 +103,6 @@ class Flashcard():
             self.open_button = tk.Button(self.root, text="Edit", command=lambda: self.change_page("pack_edit", f"{self.listbox.get(tk.ANCHOR)}.json"), width=20)
             self.title =tk.Label(self.root, text="Pack edit", width=20, height=2, font=("Helvetica", 20), bg="grey", fg="black", )
             self.text  =tk.Label(self.root, text="This is the Pack edit, you can edit already created packs here", width=70, height=3, font=("Helvetica", 10))
-
         self.open_button.grid (column=0, row=5, rowspan=2, sticky="nesw")
         self.title.grid       (row=0, column=0, sticky="nsew")
         self.text.grid        (row=1, column=0, sticky="nsew")
