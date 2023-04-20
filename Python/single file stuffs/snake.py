@@ -5,8 +5,8 @@ import keyboard
 import tkinter as tk
 
 ## Default params for board
-x = 20
-y = 20
+x = 15
+y = 15
 speed = 0.5
 count = 50
 
@@ -46,13 +46,13 @@ class Snake:
         nextpos = self.pos
         ## depending on direction, increase position 
         if self.direction == "Right":
-            self.nextpos[1] +=1
-        elif self.direction == "Left":
-            self.nextpos[1] -=1
-        elif self.direction == "Up":
-            self.nextpos[0] -=1
-        elif self.direction == "Down":
             self.nextpos[0] +=1
+        elif self.direction == "Left":
+            self.nextpos[0] -=1
+        elif self.direction == "Up":
+            self.nextpos[1] -=1
+        elif self.direction == "Down":
+            self.nextpos[1] +=1
         elif self.direction == "Dead":
             print("Snake is Dead")
         
@@ -90,22 +90,19 @@ class Snake:
         elif board[int(self.nextpos[0])][int(self.nextpos[1])] == 1:
             print("hit tail")
             return False
-        ## check pos walls
-        elif int(self.nextpos[0])-1 >= x or int(self.nextpos[1])-1 >= y:
-            print("hit positive wall")
+        ## check walls
+        elif int(self.nextpos[0])-1 >= x or int(self.nextpos[1])-1 >= y or int(self.nextpos[0]) < 0 or int(self.nextpos[1]) < 0:
+            print("hit  wall")
             return False
-        ## check negative walls
-        elif int(self.nextpos[0]) < 0 or int(self.nextpos[1]) < 0:
-            print("hit negative wall")
-            return False
+        ## check fruit
         if board[int(self.nextpos[0])][int(self.nextpos[1])] == 2:
             self.length +=1 
+            ## replace fruit, making sure its an empty location. 
             while True:
                 pos=[randint(0,x-1),randint(0,y-1)]
                 if board[pos[0]][pos[1]] == 0:
                     board[pos[0]][pos[1]]= 2
                     break
-                    
         return True
         
     ## returns false if snake is dead
@@ -114,13 +111,48 @@ class Snake:
             return True
         else:
             return False
-         
-## init board and snake
+
+def makeWindow ():
+    window.geometry("{}x{}".format((x*38), (y*41)))
+    for i in range (x):
+        for j in range (y):
+            box = tk.Button(master=window, state="disabled", height=2, width=4  )
+            uigrid.append(box)
+            box.grid(row=j, column=i, sticky= tk.EW)
+    print (uigrid)
+
+
+def update_ui():
+    update_pos =0 
+    print("update ui")
+    for i in board:
+        for gridpos in i:
+            if gridpos == 0:
+                uigrid[update_pos].config(bg="White")
+            elif gridpos == 1:
+                uigrid[update_pos].config(bg="green")
+                print("snake",uigrid[count])
+            if gridpos == 2:
+                uigrid[update_pos].config(bg="red")
+                print("fruit",uigrid[count])
+            update_pos+=1
+            
+    
+uigrid = []
 board = boardgen(x,y)
 snake = Snake()
+window = 0
+direction = "Right"
+
+window=tk.Tk()
+window.title("SNEK")
+
+makeWindow()
 
 ## game loop
-while True:
+def main_loop():#
+    global count
+    global direction
     ## slow down loop so it doesnt go brrr
     time.sleep(speed/100)
     count+=1
@@ -136,7 +168,7 @@ while True:
         direction = "Right"
 
     ## if count is more than 75 set direction, move head and update board. this also checks if the snake is alive. and breaks the loop if it is
-    if count >= 50:
+    if count >= 25:
         count = 0
         snake.direction = direction
         snake.move()
@@ -144,10 +176,14 @@ while True:
             print("---------------------------------------------------------------------------")
             for i in board:
                 print (i)
+            update_ui()
         else:
             print("game over you are dead")
-            break
-    
+            return
+    ## re-add to mainloop
+    window.after(1, main_loop)
 
+window.after (1, main_loop)
+window.mainloop()
 
 
