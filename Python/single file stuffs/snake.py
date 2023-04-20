@@ -8,9 +8,9 @@ import tkinter as tk
 x = 15
 y = 15
 
-## snake start params
+## snake start params (maybe change speed depending on pc speed, 0.5 is good for me)
 score = 0
-speed = 0.1
+speed = 0.5
 direction = "Right"
 lenght = 2
 
