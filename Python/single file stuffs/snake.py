@@ -54,7 +54,6 @@ class Snake:
         self.direction = None
         self.length = lenght
         self.poslist = []
-        self.fruitpos= [math.ceil(x/2), math.ceil(y/2)+3]
         ##place fruit, making sure its an empty location. 
         for i in range (fruit_count):
             while True:
