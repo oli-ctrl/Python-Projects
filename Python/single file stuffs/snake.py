@@ -27,10 +27,10 @@ lenght = 2
 fruit_count = 5
 
 ## Movement keys
-upkey = "w"
-leftkey = "a"
-downkey = "s"
-rightkey = "d"
+upkey =    ["w","up_arrow"]
+leftkey =  ["a","left_arrow"]
+downkey =  ["s","down arrow"]
+rightkey = ["d","right_arrow"]
 
 ## start criteria
 count = 0
@@ -186,13 +186,13 @@ def main_loop():
     count += 1
 
     ## get keyboard inputs and check they wont turn the snake 180
-    if keyboard.is_pressed(upkey) and snake.direction != "Down":
+    if any((keyboard.is_pressed(key) for key in upkey)) and snake.direction != "Down":
         direction = "Up"
-    elif keyboard.is_pressed(leftkey) and snake.direction != "Right":
+    elif any((keyboard.is_pressed(key) for key in leftkey)) and snake.direction != "Right":
         direction = "Left"
-    elif keyboard.is_pressed(downkey) and snake.direction != "Up":
+    elif any((keyboard.is_pressed(key) for key in downkey)) and snake.direction != "Up":
         direction = "Down"
-    elif keyboard.is_pressed(rightkey) and snake.direction != "Left":
+    elif any((keyboard.is_pressed(key) for key in rightkey)) and snake.direction != "Left":
         direction = "Right"
 
     ## add some key rollover code soon:tm: should allow for 2 keys to be pressed in succession without missing one of them
