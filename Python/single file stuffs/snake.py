@@ -23,7 +23,7 @@ y = 15
 score = 0
 speed = 10
 direction = "Right"
-lenght = 2
+length = 2
 fruit_count = 5
 
 ## Movement keys
@@ -48,7 +48,7 @@ class Snake:
         self.pos = [math.ceil(x / 2), math.ceil(y / 2)]
         self.nextpos = self.pos
         self.direction = None
-        self.length = lenght
+        self.length = length
         self.poslist = []
         ##place fruit, making sure its an empty location.
         for i in range(fruit_count):
@@ -154,6 +154,8 @@ def update_ui():
                 uigrid[update_pos].config(bg="green")
             elif gridpos == 2:
                 uigrid[update_pos].config(bg="red")
+
+            ## if snake is dead, make the board red
             if snake.direction == "Dead":
                 uigrid[update_pos].config(bg="red")
             update_pos += 1
@@ -205,7 +207,7 @@ def main_loop():
         update_ui()
 
         # exitloop if snake not alive
-        if not snake.check_alive():
+        if not snake.check_alive(): 
             return
     ## re-add to mainloop
     window.after(1, main_loop)
