@@ -59,7 +59,7 @@ class Board:
                 for j in i :
                     self.board[j[0]][j[1]] = self.player.turn
                     print(f"placed flip peice at ({j[0]},{j[1]})")
-                    self.player.changeTurn()
+        self.player.changeTurn()
         return
     
     def checkPlaceable(self):
