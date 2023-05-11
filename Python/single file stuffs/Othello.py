@@ -50,7 +50,7 @@ class Board:
         ## if no flips are found, return
         if self.flips == [[],[],[],[],[],[],[],[]]:
             print("no flips found")
-            return
+            return False
         ## place the piece
         for i in self.flips:
             if i != []:
@@ -59,8 +59,7 @@ class Board:
                 for j in i :
                     self.board[j[0]][j[1]] = self.player.turn
                     print(f"placed flip peice at ({j[0]},{j[1]})")
-        self.player.changeTurn()
-        return
+        return True
     
     def checkPlaceable(self):
         print("checking placeable")
@@ -75,10 +74,13 @@ class Board:
                 flips.append(self.checkDir([x,y], [-1,-1]))
                 flips.append(self.checkDir([x,y], [1,-1]))
                 flips.append(self.checkDir([x,y], [-1,1]))
+                print (flips)
                 if flips != [[],[],[],[],[],[],[],[]]:
-                    print(f"found placeable at ({x},{y})")
+                    print(f"found {self.player.turn} placeable at ({x},{y})")
                     return True
-        return flips
+        print("no placeable found")
+        return False
+        
     
     def updateUi(self):
         ## print in terminal, in future will update the ui
@@ -86,6 +88,7 @@ class Board:
             print(i)
 
     def checkDir(self, startpos, dir):
+        print(f"checking dir {dir}")
         pos = startpos
         flips = []
         while True:
@@ -253,17 +256,23 @@ for x in range(8):
 
 def buttonPress(x,y):
     print(x,y)
-    board.placePiece(x,y)
-    if board.checkPlaceable() == []:
-        print("game over")
-        if board.countPiece(1) == board.countPiece(2):
-            print("Its a Tie ")
-        elif board.countPiece(1) > board.countPiece(2):
-            print("player 1 wins")
+    if board.placePiece(x,y):
+        print("valid move")
+        playerHandler.changeTurn()
+        if board.checkPlaceable():
+            print("turn done")
         else:
-            print("player 2 wins")
-        return
+            if board.countPiece(1) == board.countPiece(2):
+                print ("Its a Tie")
+            elif board.countPiece(1) > board.countPiece(2):
+                print ("Black wins")
+            elif board.countPiece(1) < board.countPiece(2):
+                print ("White wins")
+            board.countPiece(2)
     updateUi()
+        
+    
+    
 
 
 updateUi()
