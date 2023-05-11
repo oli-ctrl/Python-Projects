@@ -4,7 +4,7 @@ from time import sleep
 
 
 class Board:
-    def __init__ (self):
+    def __init__ (self, playercontrol):
         self.width = 8
         self.height= 8
         self.flips = []
@@ -15,63 +15,61 @@ class Board:
         self.board[4][4] = 1
         self.board[3][4] = 2
         self.board[4][3] = 2
-        
+        self.player = playercontrol
+       
         
 
-    def placePiece (self, x, y, player):
-        print(x,y)
-        self.board[x][y] = player
+    def placePiece (self, x, y):
+        print (f"placing piece at {x},{y}")
+        if self.board[x][y] != 0  or x < 0 or x >= self.width or y < 0 or y >= self.height:
+            print("place not empty")
+            return
+        ## check all directions 
+        self.flips = []
+        self.flips.append(self.checkDir([x,y], [0,1]))
+        self.flips.append(self.checkDir([x,y], [0,-1]))
+        self.flips.append(self.checkDir([x,y], [1,0]))
+        self.flips.append(self.checkDir([x,y], [-1,0]))
+        self.flips.append(self.checkDir([x,y], [1,1]))
+        self.flips.append(self.checkDir([x,y], [-1,-1]))
+        self.flips.append(self.checkDir([x,y], [1,-1]))
+        self.flips.append(self.checkDir([x,y], [-1,1]))
+        ## if no flips are found, return
+        print(self.flips)
+        for i in self.flips:
+            if i != []:
+                print(f"placed piece{self.player.turn} at {x},{y}")
+                self.board[x][y] = self.player.turn
+                for j in i :
+                    self.board[j[0]][j[1]] = self.player.turn
+                self.player.changeTurn()
+                return 
+        print("no flips found")
+        return
     
     def updateUi(self):
         ## print in terminal, in future will update the ui
         for i in self.board:
             print(i)
 
-    def checkplacement(self, player, x,y):
-        if self.getvalue(x,y) != 0:
-            return False
-        
-        ## check the up direction
-        def checkup(distup):
-            currentPos = [x,y]
-            temp = []
-            for i in range(0, distup):
-                temp.append([x,y])
-                currentPos[1] -= 1
-                print(distup, currentPos)
-                if (self.getvalue(currentPos[0], currentPos[1]) == player):
-                    return temp
-        
-
-        # print(player, x, y)
-        ## find distance from edges
-        distup = y 
-        distdown = self.height - y
-        distright = self.width - x
-        distleft = x 
-
-        print (f" distup:{distup} \n distdown:{distdown} \n distright:{distright} \n distleft: {distleft}")
-
-        ## get flips 
-        self.flips.append(checkup(distup))
-
-
-
-        if len(self.flips) >1:
-            for i in self.flips:
-                self.placePiece(i[0], i[1], player)
-                self.flips = []
-                return True
-        else:
-            self.flips = []
-            return False
-            
-    
-    def getvalue(self, x,y):
-        try:
-            return self.board[x][y]
-        except:
-            print("fucked")
+    def checkDir(self, startpos, dir):
+        pos = startpos
+        flips = []
+        while True:
+            ## move in the direction
+            pos = [pos[0] + dir[0], pos[1] + dir[1]]
+            ## check if the position is out of bounds
+            if pos[0] < 0 or pos[0] >= self.width or pos[1] < 0 or pos[1] >= self.height:
+                print("hit edge")
+                return []
+            ## check if the position is empty 
+            if self.board[pos[0]][pos[1]] == 0:
+                print("hit empty")
+                return []
+            if self.board[pos[0]][pos[1]] == self.player.turn:
+                print("found")
+                return flips
+            flips.append(pos)
 
 
 class PlayerHandler:
@@ -88,28 +86,17 @@ class PlayerHandler:
 allbuttons = []
 count = 0
 
-board = Board()
 playerHandler = PlayerHandler()
+board = Board(playerHandler)
 
 while True:
-    print ("Player", playerHandler.turn, "'s turn")
     board.updateUi()
-    while True:
-        try:
-            x = int(input("X:"))
-            y = int(input("Y:"))
-            if y < 8 or x < 8:
-                break
-            else:
-                print("values need to be from 0-7")
-                
-        except:
-            print("one of the inputs was not a valid number")
-        if board.checkplacement(playerHandler.turn, x, y):
-            break
-        print("was not a valid input")
-        
-    
-
+    print(f"player {playerHandler.turn}'s turn")
+    try:
+        x = int(input("x: "))
+        y = int(input("y: "))
+        board.placePiece(x,y)
+    except:
+        print("invalid input")
+        continue
     sleep(1)
-    playerHandler.changeTurn()
