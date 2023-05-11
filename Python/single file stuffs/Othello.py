@@ -77,7 +77,6 @@ class Board:
                 flips.append(self.checkDir([x,y], [-1,1]))
                 if flips != [[],[],[],[],[],[],[],[]]:
                     print(f"found placeable at ({x},{y})")
-            
                     return True
         return flips
     
@@ -255,8 +254,6 @@ for x in range(8):
 def buttonPress(x,y):
     print(x,y)
     board.placePiece(x,y)
-    if board.checkPlaceable() == []:
-        playerHandler.changeTurn()
     if board.checkPlaceable() == []:
         print("game over")
         if board.countPiece(1) == board.countPiece(2):
