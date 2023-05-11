@@ -26,13 +26,12 @@ class Board:
         return count
 
     def placePiece (self, x, y):
-        print (f"placing piece at {x},{y}")
-        if self.board[x][y] != 0:
-            print("place not empty")
-            return
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             print("out of bounds")
             return 
+        elif self.board[x][y] != 0:
+            print("place not empty")
+            return
         ## check all directions 
         self.flips = []
         self.flips.append(self.checkDir([x,y], [0,1]))
@@ -46,13 +45,14 @@ class Board:
         ## if no flips are found, return
         for i in self.flips:
             if i != []:
-                print(f"placed piece{self.player.turn} at {x},{y}")
+                print(f"placed piece ({self.player.turn}) at  ({x},{y})")
                 self.board[x][y] = self.player.turn
                 for j in i :
                     self.board[j[0]][j[1]] = self.player.turn
+                    print(f"placed flip peice at ({j[0]},{j[1]})")
                 self.player.changeTurn()
                 return 
-        print("noT a valid move")
+        print("Not a valid move")
         return
     
     def updateUi(self):
@@ -104,10 +104,18 @@ while True:
         x = int(input("x: ")) -1  
         y = int(input("y: ")) -1 
         board.placePiece(y,x)
+        print("player 1 peices: " + str(board.countPiece(1)))
+        print("player 2 peices: " + str(board.countPiece(2)))
     except:
         print("invalid input")
         continue
     
-    print("player 1 peices: " + str(board.countPiece(1)))
-    print("player 2 peices: " + str(board.countPiece(2)))
+
+    if board.countPiece(1) + board.countPiece(2) == 64:
+        print("game over")
+        if board.countPiece(1) > board.countPiece(2):
+            print("player 1 wins")
+        elif board.countPiece(1) < board.countPiece(2):
+            print("player 2 wins")
+        break
     sleep(1)
