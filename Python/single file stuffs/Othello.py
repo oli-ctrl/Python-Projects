@@ -8,15 +8,20 @@ class Board:
         self.width = 8
         self.height= 8
         self.flips = []
+        ## make a player handler
+        self.player = playercontrol
         ## make an empty board
+        self.resetBoard()
+
+       
+    def resetBoard(self):
+        self.player.reset()
         self.board = [[0 for width in range(self.width)] for height in range(self.height)]
-        ## place starting pieces
         self.board[3][3] = 1
         self.board[4][4] = 1
         self.board[3][4] = 2
         self.board[4][3] = 2
-        self.player = playercontrol
-       
+    
     def countPiece(self, piece):
         count = 0
         for i in self.board:
@@ -54,8 +59,27 @@ class Board:
                 for j in i :
                     self.board[j[0]][j[1]] = self.player.turn
                     print(f"placed flip peice at ({j[0]},{j[1]})")
-        self.player.changeTurn()
+                    self.player.changeTurn()
         return
+    
+    def checkPlaceable(self):
+        print("checking placeable")
+        for x in range(self.width):
+            for y in range(self.height):
+                flips = []
+                flips.append(self.checkDir([x,y], [0,1]))
+                flips.append(self.checkDir([x,y], [0,-1]))
+                flips.append(self.checkDir([x,y], [1,0]))
+                flips.append(self.checkDir([x,y], [-1,0]))
+                flips.append(self.checkDir([x,y], [1,1]))
+                flips.append(self.checkDir([x,y], [-1,-1]))
+                flips.append(self.checkDir([x,y], [1,-1]))
+                flips.append(self.checkDir([x,y], [-1,1]))
+                if flips != [[],[],[],[],[],[],[],[]]:
+                    print(f"found placeable at ({x},{y})")
+            
+                    return True
+        return flips
     
     def updateUi(self):
         ## print in terminal, in future will update the ui
@@ -91,7 +115,9 @@ class PlayerHandler:
             self.turn = 2
         else: 
             self.turn = 1 
-
+    
+    def reset(self):
+        self.turn = 1
 
 allbuttons = []
 count = 0
@@ -100,7 +126,7 @@ playerHandler = PlayerHandler()
 board = Board(playerHandler)
 
 
-## __game loop for playing the game in the terminal (if you use this comment everything below out)__
+## __game loop for playing the game in the terminal (if you use this comment everything below out) missing some features__
 
 # while True:
 #     board.updateUi()
@@ -132,13 +158,13 @@ board = Board(playerHandler)
 
 ## __game loop for playing the game in the ui (if you use this comment everything above out)__
 
+## create the window
 window = tk.Tk()
 window.title("Othello")
-window.geometry("800x800")
+window.geometry("670x820")
+window.resizable(False,False)
 
-def buttonPress(x,y):
-    board.placePiece(x,y)
-    updateUi()
+
 
 ## update ui, 
 def updateUi():
@@ -156,23 +182,70 @@ def updateUi():
                 else:
                     allbuttons[place].config(bg="darkgreen")
             place +=1
+    score1.config(text="Black: " + str(board.countPiece(1)))
+    score2.config(text="White: " + str(board.countPiece(2)))
+    if playerHandler.turn==1:
+        score1.config(bg="lightgreen")
+        score2.config(bg="white")
+    else:
+        score1.config(bg="white")
+        score2.config(bg="lightgreen")
+    
+    
+
+
 
 ## create board frame 
 boardview = tk.Frame(window)
-boardview.grid(row=1, column=1)
+boardview.config(bg="green")
+boardview.place(x=10, y=70)
+boardview.config(border=6, bg="black", width=640)
 
 # score frame
 scores = tk.Frame(window)
-scores.grid(row=0, column=0)
-score1 = tk.Label(scores, text="player 1: " + str(board.countPiece(1)))
+scores.place(x=20,y=10)
+scores.config(border=2, bg="black", 
+              width=640, 
+              height=50)
+
+score1 = tk.Label(scores, 
+                  text="Black: " + str(board.countPiece(1)), 
+                  padx=60, 
+                  font=("Courier", 30))
 score1.grid(row=0, column=0)
-score2 = tk.Label(scores, text="player 2: " + str(board.countPiece(2)))
+
+score2 = tk.Label(scores, 
+                  text="White: " + str(board.countPiece(2)), 
+                  padx=60, 
+                  font=("Courier", 30))
 score2.grid(row=0, column=1)
 
-## make the buttons
+
+# reset and quit buttons
+bottom = tk.Frame(window)
+bottom.place(x=40, y=780)
+bottom.config(border=2, bg="black", width=640, height=50)
+
+reset = tk.Button(bottom, 
+                  text="Reset", 
+                  command=lambda: [board.resetBoard(), updateUi()],
+                  width=40,
+                  height=1)
+reset.grid(row=0, column=0)
+
+quit = tk.Button(bottom, 
+                 text="Quit", 
+                 command=lambda: window.destroy(),
+                 width=40,
+                 height=1)
+quit.grid(row=0, column=1)
+
+
+## make the game buttons
 for x in range(8):
     for y in range (8):
         allbuttons.append(tk.Button(boardview, 
+                                    background="green",
                                     height=5, 
                                     width=10,
                                     command=lambda x=x, y=y: buttonPress(x,y)))
@@ -182,8 +255,19 @@ for x in range(8):
 def buttonPress(x,y):
     print(x,y)
     board.placePiece(x,y)
+    if board.checkPlaceable() == []:
+        playerHandler.changeTurn()
+    if board.checkPlaceable() == []:
+        print("game over")
+        if board.countPiece(1) == board.countPiece(2):
+            print("Its a Tie ")
+        elif board.countPiece(1) > board.countPiece(2):
+            print("player 1 wins")
+        else:
+            print("player 2 wins")
+        return
     updateUi()
-    board.updateUi()
+
 
 updateUi()
 
