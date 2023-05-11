@@ -43,6 +43,10 @@ class Board:
         self.flips.append(self.checkDir([x,y], [1,-1]))
         self.flips.append(self.checkDir([x,y], [-1,1]))
         ## if no flips are found, return
+        if self.flips == [[],[],[],[],[],[],[],[]]:
+            print("no flips found")
+            return
+        ## place the piece
         for i in self.flips:
             if i != []:
                 print(f"placed piece ({self.player.turn}) at  ({x},{y})")
@@ -50,9 +54,7 @@ class Board:
                 for j in i :
                     self.board[j[0]][j[1]] = self.player.turn
                     print(f"placed flip peice at ({j[0]},{j[1]})")
-                self.player.changeTurn()
-                return 
-        print("Not a valid move")
+        self.player.changeTurn()
         return
     
     def updateUi(self):
@@ -97,25 +99,92 @@ count = 0
 playerHandler = PlayerHandler()
 board = Board(playerHandler)
 
-while True:
-    board.updateUi()
-    print(f"player {playerHandler.turn}'s turn")
-    try:
-        x = int(input("x: ")) -1  
-        y = int(input("y: ")) -1 
-        board.placePiece(y,x)
-        print("player 1 peices: " + str(board.countPiece(1)))
-        print("player 2 peices: " + str(board.countPiece(2)))
-    except:
-        print("invalid input")
-        continue
+
+## __game loop for playing the game in the terminal (if you use this comment everything below out)__
+
+# while True:
+#     board.updateUi()
+#     print(f"player {playerHandler.turn}'s turn")
+#     try:
+#         x = int(input("x: ")) -1  
+#         y = int(input("y: ")) -1 
+#         board.placePiece(y,x)
+#         print("player 1 peices: " + str(board.countPiece(1)))
+#         print("player 2 peices: " + str(board.countPiece(2)))
+#     except:
+#         print("invalid input")
+#         continue
     
 
-    if board.countPiece(1) + board.countPiece(2) == 64:
-        print("game over")
-        if board.countPiece(1) > board.countPiece(2):
-            print("player 1 wins")
-        elif board.countPiece(1) < board.countPiece(2):
-            print("player 2 wins")
-        break
-    sleep(1)
+#     if board.countPiece(1) + board.countPiece(2) == 64:
+#         print("game over")
+#         if board.countPiece(1) == board.countPiece(2):
+#             print("Its a Tie ")
+#             break
+#         elif board.countPiece(1) > board.countPiece(2):
+#             print("player 1 wins")
+#             break
+#         print("player 2 wins")
+#         break
+#     sleep(1)
+
+
+
+## __game loop for playing the game in the ui (if you use this comment everything above out)__
+
+window = tk.Tk()
+window.title("Othello")
+window.geometry("800x800")
+
+def buttonPress(x,y):
+    board.placePiece(x,y)
+    updateUi()
+
+## update ui, 
+def updateUi():
+    sleep(0.1)
+    place = 0
+    for i in range(8):
+        for j in range(8):
+            if board.board[i][j] == 1:
+                allbuttons[place].config(bg="black")
+            elif board.board[i][j] == 2:
+                allbuttons[place].config(bg="white")
+            else:
+                if (i + j) % 2 == 0:
+                    allbuttons[place].config(bg="green")
+                else:
+                    allbuttons[place].config(bg="darkgreen")
+            place +=1
+
+## create board frame 
+boardview = tk.Frame(window)
+boardview.grid(row=1, column=1)
+
+# score frame
+scores = tk.Frame(window)
+scores.grid(row=0, column=0)
+score1 = tk.Label(scores, text="player 1: " + str(board.countPiece(1)))
+score1.grid(row=0, column=0)
+score2 = tk.Label(scores, text="player 2: " + str(board.countPiece(2)))
+score2.grid(row=0, column=1)
+
+## make the buttons
+for x in range(8):
+    for y in range (8):
+        allbuttons.append(tk.Button(boardview, 
+                                    height=5, 
+                                    width=10,
+                                    command=lambda x=x, y=y: buttonPress(x,y)))
+        allbuttons[count].grid(row=x, column=y)
+        count += 1
+
+def buttonPress(x,y):
+    print(x,y)
+    board.placePiece(x,y)
+    updateUi()
+    board.updateUi()
+
+updateUi()
+
+window.mainloop()
