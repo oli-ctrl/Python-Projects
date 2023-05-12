@@ -28,6 +28,8 @@ class Board:
             for j in i:
                 if j == piece:
                     count += 1
+        if len(str(count)) == 1:
+            return "0" + str(count)
         return count
 
     def placePiece (self, x, y):
@@ -39,14 +41,8 @@ class Board:
             return
         ## check all directions 
         self.flips = []
-        self.flips.append(self.checkDir([x,y], [0,1]))
-        self.flips.append(self.checkDir([x,y], [0,-1]))
-        self.flips.append(self.checkDir([x,y], [1,0]))
-        self.flips.append(self.checkDir([x,y], [-1,0]))
-        self.flips.append(self.checkDir([x,y], [1,1]))
-        self.flips.append(self.checkDir([x,y], [-1,-1]))
-        self.flips.append(self.checkDir([x,y], [1,-1]))
-        self.flips.append(self.checkDir([x,y], [-1,1]))
+        for direction in [[0,1],[0,-1],[1,0],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]]:
+            self.flips.append(self.checkDir([x,y], direction))
         ## if no flips are found, return
         if self.flips == [[],[],[],[],[],[],[],[]]:
             print("no flips found")
@@ -63,23 +59,7 @@ class Board:
     
     def checkPlaceable(self):
         print("checking placeable")
-        for x in range(self.width):
-            for y in range(self.height):
-                flips = []
-                flips.append(self.checkDir([x,y], [0,1]))
-                flips.append(self.checkDir([x,y], [0,-1]))
-                flips.append(self.checkDir([x,y], [1,0]))
-                flips.append(self.checkDir([x,y], [-1,0]))
-                flips.append(self.checkDir([x,y], [1,1]))
-                flips.append(self.checkDir([x,y], [-1,-1]))
-                flips.append(self.checkDir([x,y], [1,-1]))
-                flips.append(self.checkDir([x,y], [-1,1]))
-                print (flips)
-                if flips != [[],[],[],[],[],[],[],[]]:
-                    print(f"found {self.player.turn} placeable at ({x},{y})")
-                    return True
-        print("no placeable found")
-        return False
+        return True
         
     
     def updateUi(self):
@@ -88,7 +68,6 @@ class Board:
             print(i)
 
     def checkDir(self, startpos, dir):
-        print(f"checking dir {dir}")
         pos = startpos
         flips = []
         while True:
@@ -127,38 +106,6 @@ count = 0
 playerHandler = PlayerHandler()
 board = Board(playerHandler)
 
-
-## __game loop for playing the game in the terminal (if you use this comment everything below out) missing some features__
-
-# while True:
-#     board.updateUi()
-#     print(f"player {playerHandler.turn}'s turn")
-#     try:
-#         x = int(input("x: ")) -1  
-#         y = int(input("y: ")) -1 
-#         board.placePiece(y,x)
-#         print("player 1 peices: " + str(board.countPiece(1)))
-#         print("player 2 peices: " + str(board.countPiece(2)))
-#     except:
-#         print("invalid input")
-#         continue
-    
-
-#     if board.countPiece(1) + board.countPiece(2) == 64:
-#         print("game over")
-#         if board.countPiece(1) == board.countPiece(2):
-#             print("Its a Tie ")
-#             break
-#         elif board.countPiece(1) > board.countPiece(2):
-#             print("player 1 wins")
-#             break
-#         print("player 2 wins")
-#         break
-#     sleep(1)
-
-
-
-## __game loop for playing the game in the ui (if you use this comment everything above out)__
 
 ## create the window
 window = tk.Tk()
@@ -205,20 +152,20 @@ boardview.config(border=6, bg="black", width=640)
 
 # score frame
 scores = tk.Frame(window)
-scores.place(x=20,y=10)
+scores.place(x=25,y=10)
 scores.config(border=2, bg="black", 
               width=640, 
               height=50)
 
 score1 = tk.Label(scores, 
                   text="Black: " + str(board.countPiece(1)), 
-                  padx=60, 
+                  padx=45, 
                   font=("Courier", 30))
 score1.grid(row=0, column=0)
 
 score2 = tk.Label(scores, 
                   text="White: " + str(board.countPiece(2)), 
-                  padx=60, 
+                  padx=45, 
                   font=("Courier", 30))
 score2.grid(row=0, column=1)
 
@@ -259,14 +206,15 @@ def buttonPress(x,y):
     if board.placePiece(x,y):
         print("valid move")
         playerHandler.changeTurn()
+        print(board.checkPlaceable())
         if board.checkPlaceable():
             print("turn done")
         else:
-            if board.countPiece(1) == board.countPiece(2):
+            if int(board.countPiece(1)) == int(board.countPiece(2)):
                 print ("Its a Tie")
-            elif board.countPiece(1) > board.countPiece(2):
+            elif int(board.countPiece(1)) > int(board.countPiece(2)):
                 print ("Black wins")
-            elif board.countPiece(1) < board.countPiece(2):
+            elif int(board.countPiece(1)) < int(board.countPiece(2)):
                 print ("White wins")
             board.countPiece(2)
     updateUi()
