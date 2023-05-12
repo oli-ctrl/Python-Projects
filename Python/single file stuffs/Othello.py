@@ -15,12 +15,15 @@ class Board:
 
        
     def resetBoard(self):
+        global  state
+        state = 0
         self.player.reset()
         self.board = [[0 for width in range(self.width)] for height in range(self.height)]
         self.board[3][3] = 1
         self.board[4][4] = 1
         self.board[3][4] = 2
         self.board[4][3] = 2
+
     
     def countPiece(self, piece):
         count = 0
@@ -71,12 +74,7 @@ class Board:
         print("no placeable")
         return False
                 
-        
-    
-    def updateUi(self):
-        ## print in terminal, in future will update the ui
-        for i in self.board:
-            print(i)
+
 
     def checkDir(self, startpos, dir):
         pos = startpos
@@ -161,7 +159,7 @@ boardview.config(bg="green")
 boardview.place(x=10, y=70)
 boardview.config(border=6, bg="black", width=640)
 
-# score frame
+# score counters
 scores = tk.Frame(window)
 scores.place(x=25,y=10)
 scores.config(border=2, bg="black", 
@@ -212,28 +210,30 @@ for x in range(8):
         allbuttons[count].grid(row=x, column=y)
         count += 1
 
+## what happens when button is pushed
 def buttonPress(x,y):
+    global state
     print(x,y)
-    if board.placePiece(x,y):
-        print("valid move")
-        playerHandler.changeTurn()
-        print(board.checkPlaceable())
-        if board.checkPlaceable():
-            print("turn done")
-        else:
-            if int(board.countPiece(1)) == int(board.countPiece(2)):
-                print ("Its a Tie")
-            elif int(board.countPiece(1)) > int(board.countPiece(2)):
-                print ("Black wins")
-            elif int(board.countPiece(1)) < int(board.countPiece(2)):
-                print ("White wins")
-            board.countPiece(2)
-    updateUi()
-        
-    
-    
-
-
+    if state == 0:
+        if board.placePiece(x,y):
+            updateUi()
+            print("valid move")
+            playerHandler.changeTurn()
+            print(board.checkPlaceable())
+            if board.checkPlaceable():
+                print("turn done")
+            if not board.checkPlaceable():
+                if int(board.countPiece(1)) == int(board.countPiece(2)):
+                    score1.config(bg="green")
+                    score2.config(bg="green")
+                elif int(board.countPiece(1)) > int(board.countPiece(2)):
+                    score1.config(bg="red")
+                    score2.config(bg="green")
+                elif int(board.countPiece(1)) < int(board.countPiece(2)):
+                    score1.config(bg="green")
+                    score2.config(bg="red")
+                state=1
+                return
+                
 updateUi()
-
 window.mainloop()
