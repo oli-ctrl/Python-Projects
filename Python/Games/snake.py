@@ -4,7 +4,7 @@ import keyboard
 import tkinter as tk
 
 ## need to import keyboard and tkinter to run this
-
+## yes I know its shit dont ask why I did it this way
 
 ## __read below to change settings__
 
