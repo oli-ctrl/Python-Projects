@@ -21,7 +21,7 @@ y = 15
 
 ## snake start params (maybe change speed depending on pc speed, 75 is good for me, on a slower machine it was good at 10)
 score = 0
-speed = 10
+speed = 75
 direction = "Right"
 length = 2
 fruit_count = 5
