@@ -58,8 +58,19 @@ class Board:
         return True
     
     def checkPlaceable(self):
-        print("checking placeable")
-        return True
+        if int(self.countPiece(0)) == 0:
+            print("Board full")
+            return False
+        for x in range(self.height):
+            for y in range(self.width):
+                if self.board[x][y] == 0:
+                    for direction in [[0,1],[0,-1],[1,0],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]]:
+                        if self.checkDir([x,y], direction)!= []:
+                            print(f"placeable :{x},{y}")
+                            return True
+        print("no placeable")
+        return False
+                
         
     
     def updateUi(self):
