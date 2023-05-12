@@ -95,7 +95,6 @@ class Board:
                 return flips
             flips.append(pos)
 
-
 class PlayerHandler:
     def __init__ (self):
         self.turn = 1
@@ -115,14 +114,11 @@ count = 0
 playerHandler = PlayerHandler()
 board = Board(playerHandler)
 
-
 ## create the window
 window = tk.Tk()
 window.title("Othello")
 window.geometry("670x820")
 window.resizable(False,False)
-
-
 
 ## update ui, 
 def updateUi():
@@ -216,10 +212,10 @@ def buttonPress(x,y):
     print(x,y)
     if state == 0:
         if board.placePiece(x,y):
-            updateUi()
             print("valid move")
             playerHandler.changeTurn()
             print(board.checkPlaceable())
+            updateUi()
             if board.checkPlaceable():
                 print("turn done")
             if not board.checkPlaceable():
