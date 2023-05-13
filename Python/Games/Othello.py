@@ -76,6 +76,7 @@ class Board:
                 for j in i :
                     self.board[j[0]][j[1]] = self.turn
                     print(f"placed flip peice at: ({j[0]},{j[1]})")
+        board.changeTurn()
         return True
 
     ## iterate through the whole board to find a placeable peice (also checks if the board is full). used for checking if the game is over
