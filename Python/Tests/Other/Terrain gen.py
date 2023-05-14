@@ -1,11 +1,9 @@
 from random import randint
 try:
-    import numpy as np
     import matplotlib.pyplot as plt
-    import scipy as sp
 except:
-    raise("you need to install numpy, matplotlib and scipy to use this program")
-    quit()
+    raise("you need to install matplotlib to use this program")
+    
 
 
 ## this is very much a proof of concept and not a finished product
