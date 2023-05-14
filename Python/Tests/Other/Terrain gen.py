@@ -1,6 +1,11 @@
-import numpy as np
 from random import randint
-import matplotlib.pyplot as plt
+try:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import scipy as sp
+except:
+    raise("you need to install numpy, matplotlib and scipy to use this program")
+    quit()
 
 
 ## this is very much a proof of concept and not a finished product
@@ -76,10 +81,10 @@ def generate():
 
 
 ## funny config stuff
-width = 250
-height = 250
+width = 2000
+height = 2000
 
-## how many times to blur the board (more = smoother but slower) for a 100x100 board 5 is good but for a 1000x1000 board you would want 50 or more (this is very slow as it does a fuck tonne of stuff)
+## how many times to blur the board (more = smoother but slower) for a 100x100 board 5 is good for interesting terrain, but if you want more defined terrain use a higher number
 
 blurcount = 5
 
@@ -87,18 +92,11 @@ blurcount = 5
 ## 1 = 1% 100 = 100% 0 = 0%
 treecover = 5 
 
-
-
-
 ## generate the board
 display = generate()
 ## display the board (this is just a visual representation of the board) if this was a game you would use your own graphics/ system for placing peices
-plt.imshow(display, origin='upper')
+plt.figure(figsize=(8, 6), dpi=80)
+plt.xlim(1000, 1000)
+plt.ylim(1000, 1000)
+plt.imshow(display)
 plt.show()
-
-
-        
-
-
-
-    
