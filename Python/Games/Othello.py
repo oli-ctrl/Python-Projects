@@ -1,7 +1,7 @@
 try:
     import tkinter as tk
 except:
-    raise ImportError("tkinter not found")
+    raise ImportError("tkinter not found, please install it")
 
 from time import sleep
 from random import randint
@@ -9,7 +9,7 @@ import base64 as b64
 try:
     import ctypes as ct
 except:
-    raise print("ctypes not found")
+    print("ctypes not found, no dark mode support")
 
 ## big class for checking placeable, placing, and flipping aswell as the board and managing turns
 class Board:
@@ -26,7 +26,7 @@ class Board:
         self.board[4][4] = 1
         self.board[3][4] = 2
         self.board[4][3] = 2
-        print("board reset")
+        # print("board reset")
 
     ## change the turn
     def changeTurn(self):
@@ -34,7 +34,7 @@ class Board:
             self.turn = 2
         else: 
             self.turn = 1 
-        print(f"turn changed to: ({self.turn})")
+        # print(f"turn changed to: ({self.turn})")
 
     ## count the number of pieces of a type
     def countPiece(self, piece):
@@ -45,17 +45,17 @@ class Board:
                     count += 1
         if len(str(count)) == 1:
             return "0" + str(count)
-        print(f"counted ({count}) peices of type ({piece})")
+        # print(f"counted ({count}) peices of type ({piece})")
         return count
 
     ## place a peice checking in all directions and flipping if needed
     def placePiece (self, x, y):
         ## check if the place is empty and in bounds
         if x < 0 or x >= 8 or y < 0 or y >= 8:
-            print("out of bounds")
+            # print("out of bounds")
             return
         elif self.board[x][y] != 0:
-            print("place not empty")
+            # print("place not empty")
             return
         
         ## check all directions 
@@ -65,31 +65,31 @@ class Board:
 
         ## if no flips are found, return
         if self.flips == [[],[],[],[],[],[],[],[]]:
-            print("no flips found")
+            # print("no flips found")
             return False
         
         ## place the piece and any following flips
         for i in self.flips:
             if i != []:
-                print(f"placed piece ({self.turn}) at: ({x},{y})")
+                # print(f"placed piece ({self.turn}) at: ({x},{y})")
                 self.board[x][y] = self.turn
                 for j in i :
                     self.board[j[0]][j[1]] = self.turn
-                    print(f"placed flip peice at: ({j[0]},{j[1]})")
+                    # print(f"placed flip peice at: ({j[0]},{j[1]})")
         board.changeTurn()
         return True
 
     ## iterate through the whole board to find a placeable peice (also checks if the board is full). used for checking if the game is over
     def checkPlaceable(self):
         if int(self.countPiece(0)) == 0:
-            print("Board full")
+            # print("Board full")
             return False
         for x in range(8):
             for y in range(8):
                 if self.board[x][y] == 0:
                     for direction in [[0,1],[0,-1],[1,0],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]]:
                         if self.checkDir([x,y], direction)!= []:
-                            print(f"found a placeable peice for ({board.turn}) at: ({x},{y})")
+                            # print(f"found a placeable peice for ({board.turn}) at: ({x},{y})")
                             return True
         return False
                 
@@ -196,7 +196,7 @@ def toggleShowMoves():
 def updateUi():
     global allbuttons
     global showmovesbool
-    print(showmovesbool)
+    
     sleep(0.1)
     place = 0
     ## update board
@@ -241,28 +241,31 @@ def updateUi():
 ## what happens a turn is made
 def makeTurn(x,y):
     global playing
-    print(f"attempting turn at: ({x},{y})")
+    # print(f"attempting turn at: ({x},{y})")
     if playing:
         if board.placePiece(x,y):
             updateUi()
-            print("valid move")
+            # print("valid move")
             if board.checkPlaceable():
-                print(f"found a valid move for: ({board.turn})")
+                # print(f"found a valid move for: ({board.turn})")
+                pass
             else:
                 ## if no move is found for the current player, change turn
-                print(f"no valid moves for: ({board.turn})")
+                # print(f"no valid moves for: ({board.turn})")
                 if board.turn == 1:
                     board.turn = 2
+                    updateUi()
                     score1.config(bg="Pink")
                     score2.config(bg="Green")
                 else:
                     board.turn = 1
+                    updateUi()
                     score1.config(bg="Pink")
                     score2.config(bg="White")
                 
                 ## if no move is found for the other player, end the game
                 if not board.checkPlaceable():
-                    print("game over")
+                    # print("game over")
                     if int(board.countPiece(1)) == int(board.countPiece(2)):
                         score1.config(bg="yellow")
                         score2.config(bg="yellow")
@@ -274,9 +277,10 @@ def makeTurn(x,y):
                         score2.config(bg="Green")
                     playing = False
                 else:
-                    print("found alternate player turn")
+                    # print("found alternate player turn")
+                    pass
             return
-    print("game over already")
+    # print("game over already")
 
 def darkTitleBar(window):
     try:
