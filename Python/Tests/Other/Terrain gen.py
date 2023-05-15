@@ -46,8 +46,10 @@ def checdirs(pos, b):
 
 def generate():
     ## make a board of either 0 or 1
+    print ("generating noise")
     board = [[randint(0,1) for a in range(width)] for b in range(height)]
     ## treespots 
+    print ("generating tree spots")
     treespots = [[randint(1,100) for a in range(width)] for b in range(height)]
 
 
