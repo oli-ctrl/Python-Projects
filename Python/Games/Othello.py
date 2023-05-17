@@ -255,13 +255,13 @@ def makeTurn(x,y):
                 if board.turn == 1:
                     board.turn = 2
                     updateUi()
-                    score1.config(bg="Pink")
-                    score2.config(bg="Green")
+                    score1.config(bg="lightgreen")
+                    score2.config(bg="pink")
                 else:
                     board.turn = 1
                     updateUi()
-                    score1.config(bg="Pink")
-                    score2.config(bg="White")
+                    score1.config(bg="lightgreen")
+                    score2.config(bg="pink")
                 
                 ## if no move is found for the other player, end the game
                 if not board.checkPlaceable():
