@@ -15,7 +15,7 @@ except:
 class Board:
     def __init__(self):
         self.resetBoard()
-        
+
     ## reset the board to the starting position (also called on init)
     def resetBoard(self):
         global playing
@@ -196,7 +196,6 @@ def toggleShowMoves():
 def updateUi():
     global allbuttons
     global showmovesbool
-    
     sleep(0.1)
     place = 0
     ## update board
@@ -327,6 +326,6 @@ window.iconphoto(False,logo)
 showmovesbool = False
 allbuttons = createButtons()
 score1, score2, reset, showmoves = createUi()
-
 updateUi()
+
 window.mainloop()
