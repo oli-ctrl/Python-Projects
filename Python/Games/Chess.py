@@ -328,8 +328,6 @@ class Queen(piece):
                         downleft = False
                         break
             
-
-
             if self.position[0] + pos > 7:
                 up = False
             if self.position[0] - pos < 0:
@@ -377,7 +375,6 @@ class King(piece):
     ## calculates its moves based on its color (diagonals)
     def movecalc(self):
         self.moves = []
-
         self.moves.append([1, 1])
         self.moves.append([-1, 1])
         self.moves.append([1, -1])
@@ -403,11 +400,13 @@ class Board():
     def __init__(self):
         self.setup()
 
+    ## sets up the peices
     def setup(self):
         self.turn = "white"
         ## setup the board
         self.allpieces = []
-        self.takenpieces = []
+        self.blacktakes = []
+        self.whitetakes = []
         #pawns
         for i in range(8):
             self.allpieces.append(Pawn())
@@ -476,18 +475,19 @@ class Board():
         for i in self.allpieces:
             i.seticon()
    
-    
+    ## removes a piece from the board
     def removepiece(self, piece):
         if piece.type == "king":
             print("game over")
-        self.takenpieces.append(piece)
+        if piece.color == "white":
+            self.whitetakes.append(piece.icon)
+        else:
+            self.blacktakes.append(piece.icon)
         self.allpieces.remove(piece)
 
-    def displaypossiblemoves(self, positions):
-        print(positions)
-
+    ## moves a piece to a position (+ some other logic)
     def movepiece(self, piece, position):
-
+        ## queen promotion
         if piece.type == "pawn":
             if position[1] == 7 or position[1] == 0:
                 self.removepiece(piece)
@@ -496,6 +496,7 @@ class Board():
                 self.allpieces[-1].color = piece.color
                 self.allpieces[-1].seticon()
 
+        ## check if it is the right turn
         if piece.color != self.turn:
             print(f"not your turn, {self.turn}")
             return False
@@ -503,7 +504,6 @@ class Board():
         print (position)
         piece.movecalc()
         piece.attackcalc()
-        self.displaypossiblemoves(piece.attacks + piece.spots)
         for places in piece.attacks + piece.spots:
             if places == position:
                 print ("valid move")
@@ -531,7 +531,8 @@ class Board():
                             pass
                         self.changeTurn()
                         return True
-                    
+
+    ## super simple function for changing turns       
     def changeTurn(self):
         if self.turn == "white":
             self.turn = "black"
@@ -540,21 +541,19 @@ class Board():
         print("turn changed to " + self.turn)
         return True
 
-             
-    
-
+## class for managing the window
 class twindow():
     def __init__(self):
         self.window = tk.Tk()
         self.window.title("Chess")
-        self.window.geometry("800x900")
+        self.window.geometry("800x910")
         self.window.resizable(0, 0)
         self.window.configure(background="white")
         self.buttons = []
         self.selected = None
     
     def createboard(self):
-        self.boardpart = tk.Frame(width=800, height=800, bg="white")
+        self.boardpart = tk.Frame(width=800, height=800, bg="white", border=4, relief="solid")
         for y in range (0,8):
             for x in range (0,8):
                 if (x+y)%2 == 0:
@@ -578,7 +577,7 @@ class twindow():
                                                   command=lambda x=x, y=y,: self.buttoncallback(x, y)))
                 self.buttons[-1].grid(row=y, column=x)
 
-        self.turnframe = tk.Frame(width=800, height=50, bg="white")
+        self.turnlabel = tk.Label(width=800, height=1, bg="white", font = ("lucida", 20), text="White's turn", anchor="center", border=4, relief="solid")
         self.resetbutton = tk.Button(master = self.window,
                                      text="Reset",
                                      width=10,
@@ -586,12 +585,29 @@ class twindow():
                                      bg="white",
                                      fg="black",
                                      command=lambda:[board.setup(), self.displaypieces(board)])
-
-
-        self.turnframe.pack()
-        self.boardpart.pack()
-        self.resetbutton.pack()
         
+        self.takenframe = tk.Frame(width=800, height=50, bg="white", border=4, relief="solid")
+        self.blacktaken = tk.Label(master = self.takenframe,
+                                     width=50,
+                                     height=1,
+                                     bg="black",
+                                     fg="white",
+                                     font=("Chess", 17),
+                                     anchor="e")
+        self.whitetaken = tk.Label(master = self.takenframe,
+                                        width=50,
+                                        height=1,
+                                        bg="white",
+                                        fg="black",
+                                        font=("Chess", 17),
+                                        anchor="e")
+        ## pack everything
+        self.blacktaken.pack()
+        self.whitetaken.pack()
+        self.turnlabel.pack()
+        self.boardpart.pack()
+        self.takenframe.pack()
+        self.resetbutton.pack()
         return True
 
     def buttoncallback(self, x, y):
@@ -629,17 +645,23 @@ class twindow():
             i.config(text="", fg="black")
         for piece in board.allpieces:
             self.buttons[piece.position[0]+piece.position[1]*8].config(text=piece.icon)
-        self.turnframe.config(bg=board.turn)
+        if board.turn == "white":
+            self.turnlabel.config(text="White's turn", fg="black", bg="white")
+        else:
+            self.turnlabel.config(text="Black's turn", fg="white", bg="black")
+
+        print (board.blacktakes)
+        print (board.whitetakes)
+        self.blacktaken.config(text=board.blacktakes)
+        self.whitetaken.config(text=board.whitetakes)
+
         return True
 
 
 display = twindow()
 display.createboard()
-
 board = Board()
 
 
 display.displaypieces(board)
-
 display.window.mainloop()
-    
