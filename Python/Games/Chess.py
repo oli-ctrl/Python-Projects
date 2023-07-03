@@ -1,5 +1,10 @@
 import tkinter as tk
+
+## IMPORTANT STUFF
 ## install this font https://www.dafont.com/chess.font
+
+
+
 
 ## piece class that all other pieces inherit from
 class piece():
@@ -482,6 +487,15 @@ class Board():
         print(positions)
 
     def movepiece(self, piece, position):
+
+        if piece.type == "pawn":
+            if position[1] == 7 or position[1] == 0:
+                self.removepiece(piece)
+                self.allpieces.append(Queen())
+                self.allpieces[-1].position = position
+                self.allpieces[-1].color = piece.color
+                self.allpieces[-1].seticon()
+
         if piece.color != self.turn:
             print(f"not your turn, {self.turn}")
             return False
@@ -564,7 +578,7 @@ class twindow():
                                                   command=lambda x=x, y=y,: self.buttoncallback(x, y)))
                 self.buttons[-1].grid(row=y, column=x)
 
-        self.turnpart = tk.Frame(width=800, height=50, bg="white")
+        self.turnframe = tk.Frame(width=800, height=50, bg="white")
         self.resetbutton = tk.Button(master = self.window,
                                      text="Reset",
                                      width=10,
@@ -574,7 +588,7 @@ class twindow():
                                      command=lambda:[board.setup(), self.displaypieces(board)])
 
 
-        self.turnpart.pack()
+        self.turnframe.pack()
         self.boardpart.pack()
         self.resetbutton.pack()
         
@@ -615,11 +629,8 @@ class twindow():
             i.config(text="", fg="black")
         for piece in board.allpieces:
             self.buttons[piece.position[0]+piece.position[1]*8].config(text=piece.icon)
-        self.turnpart.config(bg=board.turn)
-
+        self.turnframe.config(bg=board.turn)
         return True
-
-
 
 
 display = twindow()
