@@ -45,7 +45,6 @@ class Pawn(piece):
     ## calculates its attacks based on its color (diagonals when taking a piece)
     def attackcalc(self):
         self.moves = []
-        self.movecalc()
         if self.color == "white":
             self.moves.append([1, 1])
             self.moves.append([-1, 1])
@@ -272,23 +271,26 @@ class Board():
         piece.movecalc()
         piece.attackcalc()
         self.displaypossiblemoves(piece.attacks + piece.spots)
-        for i in piece.attacks + piece.spots:
-            if i == position:
+        for places in piece.attacks + piece.spots:
+            if places == position:
                 print ("valid move")
-                for i in self.allpieces:
-                    if i.position == position:
+                for pieces in self.allpieces:
+                    if pieces.position == position:
                         print("Found a piece at that position")
-                        if i.color == piece.color:
+                        if pieces.color == piece.color:
                             print("Can't move there, same piece")
                             return False
                         else:
-                            print("Can move there, attacking")
-                            self.removepiece(i)
-                            piece.position = position
-                            self.changeTurn()
-                            return True
-                for i in piece.spots:
-                    if i == position:
+                            if position in piece.attacks:
+                                print("Can move there, attacking")
+                                self.removepiece(pieces)
+                                piece.position = position
+                                self.changeTurn()
+                                return True
+                            print("cant attack, not in attack list")
+                            return False
+                for location in piece.spots:
+                    if location == position:
                         piece.position = position
                         try:
                             piece.firstmove = False
