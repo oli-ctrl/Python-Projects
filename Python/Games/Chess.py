@@ -1,11 +1,13 @@
 import tkinter as tk
-import base64 as b64
+## install this font https://www.dafont.com/chess.font
 
+## piece class that all other pieces inherit from
 class piece():
     def __init__(self):
         self.position = None
         self.color = None
         self.type = None
+        self.icon = None
         self.moves = []
 
 ## Pawn class    
@@ -61,7 +63,6 @@ class Rook(piece):
     def __init__(self):
         super().__init__()
         self.type = "rook"
-        global board
 
     ## sets its icon based on its color (gets from chess font)
     def seticon(self):
@@ -132,6 +133,7 @@ class Rook(piece):
             self.attacks.append([self.position[0] + i[0], self.position[1] + i[1]])
             self.attacks.append(self.spots)
 
+## Knight class
 class Knight(piece):
     def __init__(self):
         super().__init__()
@@ -141,8 +143,29 @@ class Knight(piece):
             self.icon =  "h"
         else:
             self.icon = "j"
-
+    def movecalc(self):
+        self.moves = []
+        self.moves.append([1, 2])
+        self.moves.append([2, 1])
+        self.moves.append([-1, 2])
+        self.moves.append([-2, 1])
+        self.moves.append([1, -2])
+        self.moves.append([2, -1])
+        self.moves.append([-1, -2])
+        self.moves.append([-2, -1])
+        self.spots = []
+        for i in self.moves:
+            self.spots.append([self.position[0] + i[0], self.position[1] + i[1]])
         
+    def attackcalc(self):
+        self.moves = []
+        self.movecalc()
+        self.attacks = []
+        for i in self.moves:
+            self.attacks.append([self.position[0] + i[0], self.position[1] + i[1]])
+            self.attacks.append(self.spots)
+
+## Bishop class
 class Bishop(piece):
     def __init__(self):
         super().__init__()
@@ -152,8 +175,67 @@ class Bishop(piece):
             self.icon = "b"
         else:
             self.icon = "n" 
+    def movecalc(self):
+        upright = True
+        upleft = True
+        downright = True
+        downleft = True
 
-    
+        self.uprightmoves = []
+        self.upleftmoves = []
+        self.downrightmoves = []
+        self.downleftmoves = []
+
+        for pos in range(1,8):
+            if upright == True:
+                self.uprightmoves.append([pos, -pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.uprightmoves[-1][0], self.position[1] + self.uprightmoves[-1][1]]) == i.position:
+                        upright = False
+                        break
+            if upleft == True:
+                self.upleftmoves.append([pos, pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.upleftmoves[-1][0], self.position[1] + self.upleftmoves[-1][1]]) == i.position:
+                        upleft = False
+                        break
+
+            if downright == True:
+                self.downrightmoves.append([-pos, -pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.downrightmoves[-1][0], self.position[1] + self.downrightmoves[-1][1]]) == i.position:
+                        downright = False
+                        break
+
+            if downleft == True:
+                self.downleftmoves.append([-pos, pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.downleftmoves[-1][0], self.position[1] + self.downleftmoves[-1][1]]) == i.position:
+                        downleft = False
+                        break
+            if self.position[0] + pos > 7 or self.position[1] - pos < 0:
+                upright = False
+            if self.position[0] + pos > 7 or self.position[1] + pos > 7:
+                upleft = False
+            if self.position[0] - pos < 0 or self.position[1] - pos < 0:
+                downright = False
+            if self.position[0] - pos < 0 or self.position[1] + pos > 7:
+                downleft = False
+
+        self.moves = self.uprightmoves + self.upleftmoves + self.downrightmoves + self.downleftmoves
+        self.spots = []
+        for i in self.moves:
+            self.spots.append([self.position[0] + i[0], self.position[1] + i[1]])
+
+    def attackcalc(self):
+        self.moves = []
+        self.movecalc()
+        self.attacks = []
+        for i in self.moves:
+            self.attacks.append([self.position[0] + i[0], self.position[1] + i[1]])
+            self.attacks.append(self.spots)
+
+## Queen class    
 class Queen(piece):
     def __init__(self):
         super().__init__()
@@ -163,17 +245,154 @@ class Queen(piece):
             self.icon = "q"
         else:
             self.icon = "w"
+    
+    ## calculates its moves based on its color (diagonals)
+    def movecalc(self):
+        self.moves = []
+        up = True
+        down = True
+        left = True
+        right = True
+
+        upright = True
+        upleft = True
+        downright = True
+        downleft = True
+
+        self.upmoves = []
+        self.downmoves = []
+        self.rightmoves = []
+        self.leftmoves = []
+        
+        self.uprightmoves = []
+        self.upleftmoves = []
+        self.downrightmoves = []
+        self.downleftmoves = []
+
+        for pos in range(1,8):
+            if up == True:
+                self.upmoves.append([pos, 0])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.upmoves[-1][0], self.position[1] + self.upmoves[-1][1]]) == i.position:
+                        up = False
+                        break
+            if down == True:
+                self.downmoves.append([-pos, 0])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.downmoves[-1][0], self.position[1] + self.downmoves[-1][1]]) == i.position:
+                        down = False
+                        break
+            if left == True:
+                self.leftmoves.append([0, pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.leftmoves[-1][0], self.position[1] + self.leftmoves[-1][1]]) == i.position:
+                        left = False
+                        break
+            if right == True:
+                self.rightmoves.append([0, -pos])   
+                for i in board.allpieces:
+                    if ([self.position[0] + self.rightmoves[-1][0], self.position[1] + self.rightmoves[-1][1]]) == i.position:
+                        right = False
+                        break
+
+            ## diagonals
+            if upright == True:
+                self.uprightmoves.append([pos, -pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.uprightmoves[-1][0], self.position[1] + self.uprightmoves[-1][1]]) == i.position:
+                        upright = False
+                        break
+            if upleft == True:
+                self.upleftmoves.append([pos, pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.upleftmoves[-1][0], self.position[1] + self.upleftmoves[-1][1]]) == i.position:
+                        upleft = False
+                        break
+
+            if downright == True:
+                self.downrightmoves.append([-pos, -pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.downrightmoves[-1][0], self.position[1] + self.downrightmoves[-1][1]]) == i.position:
+                        downright = False
+                        break
+
+            if downleft == True:
+                self.downleftmoves.append([-pos, pos])
+                for i in board.allpieces:
+                    if ([self.position[0] + self.downleftmoves[-1][0], self.position[1] + self.downleftmoves[-1][1]]) == i.position:
+                        downleft = False
+                        break
+            
 
 
+            if self.position[0] + pos > 7:
+                up = False
+            if self.position[0] - pos < 0:
+                down = False
+            if self.position[1] + pos > 7:
+                left = False
+            if self.position[1] - pos < 0:
+               right = False
+            if self.position[0] + pos > 7 or self.position[1] - pos < 0:
+                upright = False
+            if self.position[0] + pos > 7 or self.position[1] + pos > 7:
+                upleft = False
+            if self.position[0] - pos < 0 or self.position[1] - pos < 0:
+                downright = False
+            if self.position[0] - pos < 0 or self.position[1] + pos > 7:
+                downleft = False
+
+
+        self.moves = self.upmoves + self.downmoves + self.rightmoves + self.leftmoves + self.uprightmoves + self.upleftmoves + self.downrightmoves + self.downleftmoves
+        self.spots = []
+        for i in self.moves:
+            self.spots.append([self.position[0] + i[0], self.position[1] + i[1]])
+        
+    def attackcalc(self):
+        self.moves = []
+        self.movecalc()
+        self.attacks = []
+        for i in self.moves:
+            self.attacks.append([self.position[0] + i[0], self.position[1] + i[1]])
+        self.attacks = self.attacks + self.spots
+
+## king class
 class King(piece):
     def __init__(self):
         super().__init__()
         self.type = "king"
+
+    ## sets its icon based on its color (gets from chess font)
     def seticon(self):
         if self.color == "white":
             self.icon = "k"
         else:
             self.icon = "l"
+    
+    ## calculates its moves based on its color (diagonals)
+    def movecalc(self):
+        self.moves = []
+
+        self.moves.append([1, 1])
+        self.moves.append([-1, 1])
+        self.moves.append([1, -1])
+        self.moves.append([-1, -1])
+        self.moves.append([0, 1])
+        self.moves.append([0, -1])
+        self.moves.append([1, 0])
+        self.moves.append([-1, 0])
+        self.spots = []
+        for i in self.moves:
+            self.spots.append([self.position[0] + i[0], self.position[1] + i[1]])
+    
+    ## calculates its attacks (same as moves)
+    def attackcalc(self):
+        self.moves = []
+        self.movecalc()
+        self.attacks = []
+        for i in self.moves:
+            self.attacks.append([self.position[0] + i[0], self.position[1] + i[1]])
+            self.attacks.append(self.spots)
 
 class Board():
     def __init__(self):
