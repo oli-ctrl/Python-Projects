@@ -398,10 +398,13 @@ class King(piece):
 
 class Board():
     def __init__(self):
+        self.state = "playing"
         self.setup()
+        
 
     ## sets up the peices
     def setup(self):
+        self.state = "playing"
         self.turn = "white"
         ## setup the board
         self.allpieces = []
@@ -479,23 +482,29 @@ class Board():
     def removepiece(self, piece):
         if piece.type == "king":
             print("game over")
+            if piece.color == "white":
+                self.state = "black wins"
+            else:
+                self.state = "white wins"
+            board.changeTurn()
         if piece.color == "white":
             self.whitetakes.append(piece.icon)
         else:
             self.blacktakes.append(piece.icon)
         self.allpieces.remove(piece)
 
-    ## moves a piece to a position (+ some other logic)
-    def movepiece(self, piece, position):
-        ## queen promotion
+
+    def checkpromotable(self, piece, position):
         if piece.type == "pawn":
             if position[1] == 7 or position[1] == 0:
-                self.removepiece(piece)
+                self.allpieces.remove(piece)
                 self.allpieces.append(Queen())
                 self.allpieces[-1].position = position
                 self.allpieces[-1].color = piece.color
                 self.allpieces[-1].seticon()
 
+    ## moves a piece to a position (+ some other logic)
+    def movepiece(self, piece, position):              
         ## check if it is the right turn
         if piece.color != self.turn:
             print(f"not your turn, {self.turn}")
@@ -519,6 +528,7 @@ class Board():
                                 self.removepiece(pieces)
                                 piece.position = position
                                 self.changeTurn()
+                                self.checkpromotable(piece, position)
                                 return True
                             print("cant attack, not in attack list")
                             return False
@@ -530,6 +540,7 @@ class Board():
                         except:
                             pass
                         self.changeTurn()
+                        self.checkpromotable(piece, position)
                         return True
 
     ## super simple function for changing turns       
@@ -612,6 +623,8 @@ class twindow():
 
     def buttoncallback(self, x, y):
         self.displaypieces(board)
+        if board.state != "playing":
+            return False
         self.buttons[x+y*8].configure(fg="red")
         for i in board.allpieces:
             if i.position == [x, y]:
@@ -621,10 +634,10 @@ class twindow():
                         print("no piece selected")
                         self.selected = i
                     elif self.selected.color == i.color:
-                        print("same colour piece selected, swapping ")
+                        print("same color piece selected, swapping ")
                         self.selected = i
                     else:
-                        print("different colour piece selected, attacking")
+                        print("different color piece selected, attacking")
                         board.movepiece(self.selected, [x, y])
                         self.selected = None
                         self.displaypieces(board)
@@ -641,19 +654,22 @@ class twindow():
         return True
     
     def displaypieces(self, board):
+        allpeicedisplay = []
         for i in self.buttons: 
             i.config(text="", fg="black")
         for piece in board.allpieces:
             self.buttons[piece.position[0]+piece.position[1]*8].config(text=piece.icon)
+            allpeicedisplay.append((piece.position, piece.type, piece.color, piece.icon))
+        print (allpeicedisplay)
         if board.turn == "white":
             self.turnlabel.config(text="White's turn", fg="black", bg="white")
         else:
             self.turnlabel.config(text="Black's turn", fg="white", bg="black")
 
-        print (board.blacktakes)
-        print (board.whitetakes)
         self.blacktaken.config(text=board.blacktakes)
         self.whitetaken.config(text=board.whitetakes)
+        if board.state != "playing":
+            self.turnlabel.config(text=board.state)
 
         return True
 
