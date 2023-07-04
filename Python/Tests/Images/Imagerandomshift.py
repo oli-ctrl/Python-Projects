@@ -1,7 +1,7 @@
 try:
     from PIL import Image
 except ImportError:
-    raise ImportError(f"Pillow is not installed. Run 'python3 -m pip install Pillow' to install it")
+    raise ImportError("Pillow is not installed. Run 'python3 -m pip install Pillow' to install it")
 from random import randint
 from time import time
 import os
