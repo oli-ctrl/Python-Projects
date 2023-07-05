@@ -563,6 +563,7 @@ class twindow():
         self.buttons = []
         self.selected = None
     
+    ## create the board and other ui components
     def createboard(self):
         self.boardpart = tk.Frame(width=800, height=800, bg="white", border=4, relief="solid")
         for y in range (0,8):
@@ -621,6 +622,7 @@ class twindow():
         self.resetbutton.pack()
         return True
 
+    ## this is some logic that happens when the button is pressed.
     def buttoncallback(self, x, y):
         self.displaypieces(board)
         if board.state != "playing":
@@ -653,6 +655,7 @@ class twindow():
                 self.displaypieces(board)
         return True
     
+    ## displays all the pieces on the board and updates other ui stuff
     def displaypieces(self, board):
         allpeicedisplay = []
         for i in self.buttons: 
