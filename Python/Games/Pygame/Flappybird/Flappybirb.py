@@ -16,10 +16,6 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
 
-## colours
-sky = pygame.Color("#80CCCC")
-ground = pygame.Color("#80CC80")
-
 ## particle controller
 class particles():
     def __init__(self):
@@ -182,7 +178,7 @@ class Birb():
         self.velocity = -10
         for i in range (20,50):
             i = random.randint(200,255)
-            game.particlecontroller.add(particle(self.x, self.y, random.randint(10,20), (i,i,i), random.randint(-50,50)/10, random.randint(-50,50)/10, 0.5, 50, 0.5, True, 1))
+            game.particlecontroller.add(particle(self.x, self.y, random.randint(10,20), (i,i,i), random.randint(-50,50)/10, random.randint(-50,50)/10, 0.5, 1, 0.5, True, 1))
             game.particlecontroller.allparticles[-1].wallbounce = True
 
     ## checks if the bird hits a pipe, or the ground
@@ -205,7 +201,7 @@ class Birb():
         while self.y <= 680:
             game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", random.randint(-10,10)/10, random.randint(-10,10)/10, 0.5, 20, 0.5, True, 0.6))
             self.direction = 80
-            screen.fill(sky)
+            screen.fill((0,0,0))
             game.draw()
             game.updateall()
             self.x -= 3.1
@@ -224,7 +220,7 @@ class Birb():
             game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", random.randint(-10,10)/10, random.randint(-10,10)/10, 0.5, 20, 0.5, True, 0.6))
             if count % 5 == 0:
                 game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", -10, random.randint(-10,10)/10, 0.5, random.randint(20,40), 0.5, True, 0.6))
-            screen.fill(sky)
+            screen.fill((0,0,0))
             game.updateall()
             game.draw()
             pygame.display.flip()
@@ -389,7 +385,7 @@ class fades():
     def fadein(self):
         for alpha in range(255, 1, -3):
             if alpha <250:
-                screen.fill(sky)
+                screen.fill("Blue")
             else:
                 screen.fill((0,0,0))
             game.draw()
@@ -417,13 +413,39 @@ class background():
         if self.x < -1400:
             self.x = 0
 
+## ground class
+class ground():
+    def __init__(self):
+        self.size = 3
+        self.x = 768
+        self.image = pygame.image.load(str(path) + "Ground.png")
+        self.image = pygame.transform.scale(self.image, (128*self.size, 14*self.size))
+        self.y = 680
+
+    def draw(self):
+        screen.blit(self.image, (self.x, self.y))
+        screen.blit(self.image, (self.x - 256*self.size, self.y))
+        screen.blit(self.image, (self.x - 128*self.size, self.y))
+        screen.blit(self.image, (self.x + 128*self.size, self.y))
+        screen.blit(self.image, (self.x + 256*self.size, self.y))
+        screen.blit(self.image, (self.x + 384*self.size, self.y))
+
+        if game.debug:
+            pygame.draw.rect(screen, "dark green", (0, 680, 1400, 100))
+    
+    def update(self, amount = 3):
+        self.x -= amount
+        if self.x < -128:
+            self.x = 768
+
 ## shrub controller class
 class shrubs():
     def __init__(self):
         self.allshrubs = []
         self.shrubimages = []
-        for i in range(1, 4):
-            self.shrubimages.append(pygame.image.load(str(path) + "Shrub" + str(i) + ".png"))
+        ## load shrub images
+        for i in range(0, 5):
+            self.shrubimages.append(pygame.image.load(str(path) + "Shrub" + str(i+1) + ".png"))
 
     def add(self, shrub):
         self.allshrubs.append(shrub)
@@ -445,9 +467,9 @@ class shrubs():
 class shrub():
     def __init__(self):
         self.x = 1400
-        self.y = random.randint(650, 720)
         self.size = random.randint(30, 50)
         self.depth = random.randint(3, 5)
+        self.y = 715 - self.size*self.depth/3 
         color = 200+ self.depth*5 + random.randint(-10, 10)
         self.color = pygame.Color(color, color, color)
         self.image = []
@@ -455,8 +477,9 @@ class shrub():
         if self.image == []:
             self.image = pygame.transform.scale(random.choice(game.shrubcontroller.shrubimages), (self.size*self.depth/3, self.size*self.depth/3))
         if game.debug:
-            pygame.draw.circle(screen, self.color, (self.x, self.y), self.size*self.depth/4)
-        screen.blit(self.image, (self.x-24, self.y-25))
+            pygame.draw.rect(screen, (0,0,0), (self.x-25, self.y-25, self.size*self.depth/3, self.size*self.depth/3))
+        screen.blit(self.image, (self.x-25, self.y-25))
+        
     
     def move(self, amount = 2):
         self.x -= amount+(self.depth/2)
@@ -464,8 +487,6 @@ class shrub():
     def check (self):
         if self.x < -100:
             game.shrubcontroller.allshrubs.remove(self)
-
-
 
 ## biiig game class that controls almost everything
 class Game():
@@ -475,6 +496,7 @@ class Game():
         self.debug = False
         ## class inits  
         self.background = background()
+        self.ground = ground()
         self.cloudcontroller = clouds()
         self.particlecontroller = particles()
         self.pipecontroller = Pipes()
@@ -487,28 +509,29 @@ class Game():
         self.pipeTime = time.time()
         self.cloudTime = time.time()
         self.shrubTime = time.time()
+        self.shrubNextTime = random.randint(1, 300)/100
         self.menu.construct()
         self.running = True
         self.firstlaunch = True
         self.pipecontroller.add(Pipe(1400, random.randint(300,600)))
         self.pipecontroller.add(Pipe(1000, random.randint(300,600)))
 
-
     def draw(self):
         self.background.draw()
         self.cloudcontroller.draw()
         self.pipecontroller.draw()
         self.particlecontroller.draw()
-        self.drawground()
-        self.shrubcontroller.draw()
-        self.drawscore(self.birb.score)
+        
         if self.gamestate == "Playing":
             self.birb.draw()
+            self.drawscore(self.birb.score)
         if self.gamestate == "Menu":
             if not self.birb.alive:
                 self.birb.draw()
         if self.debug:
             self.drawfps()
+        self.ground.draw()
+        self.shrubcontroller.draw()
 
     def updateall(self):
         self.cloudcontroller.move()
@@ -516,12 +539,14 @@ class Game():
         if self.gamestate == "Playing" and self.birb.alive:
             self.pipecontroller.update()
             self.background.update()
+            self.ground.update()
             self.birb.update()
             self.shrubcontroller.move()
         if self.gamestate == "Menu":
             if self.firstlaunch == True:
                 self.pipecontroller.update()
                 self.background.update()
+                self.ground.update()
                 self.shrubcontroller.move()
 
     def check(self):
@@ -539,9 +564,11 @@ class Game():
         if time.time() - self.cloudTime >= 1.5:
             self.cloudcontroller.add(cloud())
             self.cloudTime = time.time()
-        if time.time() - self.shrubTime >= 1.5:
-            self.shrubcontroller.add(shrub())
-            self.shrubTime = time.time()
+        if self.birb.alive:
+            if time.time() - self.shrubTime >= self.shrubNextTime:
+                self.shrubcontroller.add(shrub())
+                self.shrubTime = time.time()
+                self.shrubNextTime = random.randint(1, 100)/100
     ## toggle debug mode
     def toggledebug(self):
         if self.debug:
@@ -558,10 +585,8 @@ class Game():
             self.fade.fadein()
             self.birb.jump()
             self.pipeTime = time.time()
+    
     ## simple functions
-    def drawground(self):
-        pygame.draw.rect(screen, ground, (0, 680, 1400, 100))
-
     def drawscore(self,points):
         font = pygame.font.SysFont("Arial", 50)
         text = font.render(f"Points: {points}", True, "black")
@@ -592,8 +617,8 @@ while game.running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game.running = False
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill(sky)
+    # fill the screen with a to wipe away anything from last frame
+    screen.fill((0,0,0))
     # RENDER YOUR GAME HERE
     ## check if objects are of screen. if they are, remove them
     game.check()
