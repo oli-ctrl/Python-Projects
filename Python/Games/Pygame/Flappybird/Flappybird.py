@@ -108,8 +108,8 @@ class particle():
                     self.bouncecooldown = 1
                     break
         
-        ## moves particle with birb
-        if self.effectedbymovement == True and game.birb.alive == True:
+        ## moves particle with bird
+        if self.effectedbymovement == True and game.bird.alive == True:
             self.x -= 3
         
     ## draws the particle
@@ -123,22 +123,23 @@ class particle():
             self.size = 0
             return True
 
-class Birb():
+## bird class 
+class Bird():
     def __init__(self):
         self.size = 30
         self.velocity = -10
         self.gravity = 0.5
         self.direction = 0
-        self.picture = pygame.image.load(str(path) + "Bird.png")
+        self.picture = pygame.image.load(str(path) + "bird.png")
         self.picture = pygame.transform.scale(self.picture, (self.size*2, self.size*2))
-        self.deadpicture = pygame.image.load(str(path) + "DeadBird.png")
+        self.deadpicture = pygame.image.load(str(path) + "Deadbird.png")
         self.deadpicture = pygame.transform.scale(self.deadpicture, (self.size*2.5, self.size*2.5))
         self.reset()
 
     ## resets the bird
     def reset(self):
         self.direction = 0
-        self.x = 300
+        self.x = 360
         self.y = 360
         self.score = 0
         self.alive = True
@@ -195,16 +196,17 @@ class Birb():
     ## death animation
     def die(self):
         self.alive = "dying"
-        count = 0
+        count = -5
+        self.velocity = 0
         for i in range (0,25):
             game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", random.randint(-20,20)/10, random.randint(-20,20)/10, 0.5, 40, 0.5, True, 0.6))
         while self.y <= 680:
             game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", random.randint(-10,10)/10, random.randint(-10,10)/10, 0.5, 20, 0.5, True, 0.6))
-            self.direction = 80
+            self.direction = 100
             screen.fill((0,0,0))
             game.draw()
             game.updateall()
-            self.x -= 3.1
+            self.x -= 5
             pygame.display.flip()
             clock.tick(60)
             for event in pygame.event.get():
@@ -217,6 +219,7 @@ class Birb():
             game.particlecontroller.add(particle(self.x, self.y, random.randint(4,6), "yellow", random.randint(-50, 50)/10, random.randint(-100,100)/10, 0.5, 100, 0.2))
         self.alive = False
         while True:
+            self.direction = 80
             game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", random.randint(-10,10)/10, random.randint(-10,10)/10, 0.5, 20, 0.5, True, 0.6))
             if count % 5 == 0:
                 game.particlecontroller.add(particle(self.x, self.y, random.randint(3,7), "red", -10, random.randint(-10,10)/10, 0.5, random.randint(20,40), 0.5, True, 0.6))
@@ -280,8 +283,8 @@ class Pipe ():
     
     ## check if the pipe is off the screen or the bird has passed
     def check(self):
-        if self.x <= game.birb.x and not self.givenpoint:
-            game.birb.score += 1
+        if self.x <= game.bird.x and not self.givenpoint:
+            game.bird.score += 1
             self.givenpoint = True
         if self.x < -100:
             game.pipecontroller.pipes.remove(self)
@@ -500,7 +503,7 @@ class Game():
         self.cloudcontroller = clouds()
         self.particlecontroller = particles()
         self.pipecontroller = Pipes()
-        self.birb = Birb()
+        self.bird = Bird()
         self.fade = fades()
         self.menu = mainmenu()
         self.shrubcontroller = shrubs()
@@ -517,17 +520,20 @@ class Game():
         self.pipecontroller.add(Pipe(1000, random.randint(300,600)))
 
     def draw(self):
+        ## always draw 
         self.background.draw()
         self.cloudcontroller.draw()
         self.pipecontroller.draw()
         self.particlecontroller.draw()
-        
+        ## draw depending on gamestate
         if self.gamestate == "Playing":
-            self.birb.draw()
-            self.drawscore(self.birb.score)
+            self.bird.draw()
+            self.drawscore(self.bird.score)
         if self.gamestate == "Menu":
-            if not self.birb.alive:
-                self.birb.draw()
+            if not self.bird.alive:
+                self.bird.draw()
+        
+        ## stuff that is always drawn on top
         if self.debug:
             self.drawfps()
         self.ground.draw()
@@ -536,11 +542,11 @@ class Game():
     def updateall(self):
         self.cloudcontroller.move()
         self.particlecontroller.update()
-        if self.gamestate == "Playing" and self.birb.alive:
+        if self.gamestate == "Playing" and self.bird.alive:
             self.pipecontroller.update()
             self.background.update()
             self.ground.update()
-            self.birb.update()
+            self.bird.update()
             self.shrubcontroller.move()
         if self.gamestate == "Menu":
             if self.firstlaunch == True:
@@ -553,9 +559,9 @@ class Game():
         self.cloudcontroller.check()
         self.pipecontroller.check()
         self.shrubcontroller.check()
-        if self.gamestate == "Playing" and self.birb.alive:
-            if self.birb.checkhit():
-                self.birb.die()
+        if self.gamestate == "Playing" and self.bird.alive:
+            if self.bird.checkhit():
+                self.bird.die()
                 self.gamestate = "Menu"
         ## add a pipe every 2 seconds and cloud every 1.5 seconds
         if time.time() - self.pipeTime >= 2:
@@ -564,7 +570,7 @@ class Game():
         if time.time() - self.cloudTime >= 1.5:
             self.cloudcontroller.add(cloud())
             self.cloudTime = time.time()
-        if self.birb.alive:
+        if self.bird.alive:
             if time.time() - self.shrubTime >= self.shrubNextTime:
                 self.shrubcontroller.add(shrub())
                 self.shrubTime = time.time()
@@ -577,14 +583,14 @@ class Game():
             self.debug = True
     ## reset the game
     def reset(self):
-            self.birb.reset()
+            self.bird.reset()
             self.pipecontroller.reset()
             self.pipecontroller.add(Pipe(1400, random.randint(300,600)))
             self.pipecontroller.add(Pipe(1000, random.randint(300,600)))
-            self.birb.jump()
             self.fade.fadein()
-            self.birb.jump()
+            self.bird.jump()
             self.pipeTime = time.time()
+
     
     ## simple functions
     def drawscore(self,points):
@@ -596,7 +602,6 @@ class Game():
         font = pygame.font.SysFont("Arial", 50)
         text = font.render(f"FPS: {round(clock.get_fps())}", True, "black")
         screen.blit(text, (0, 50))
-
 
 
 game = Game()
@@ -634,11 +639,11 @@ while game.running:
     if game.gamestate == "Menu":
         ## draw background stuff
         game.draw()
-        ## draw the birb bleeding if its dead
-        if not game.birb.alive:
+        ## draw the bird bleeding if its dead
+        if not game.bird.alive:
             bloodcount += 1
             if bloodcount >= 5:
-                game.particlecontroller.add(particle(game.birb.x, game.birb.y, random.randint(3,7), "red", -10, random.randint(-10,10)/10, 0.5, random.randint(20,40), 0.5, True, 0.6))
+                game.particlecontroller.add(particle(game.bird.x, game.bird.y, random.randint(3,7), "red", -10, random.randint(-10,10)/10, 0.5, random.randint(20,40), 0.5, True, 0.6))
                 bloodcount = 0
         ## draw the menu
         game.menu.draw()
@@ -659,9 +664,9 @@ while game.running:
             pressed = False
             game.reset()
             
-        ## move and check the birb
+        ## get inputs
         if pygame.key.get_pressed()[pygame.K_SPACE] and not pressed:
-            game.birb.jump()
+            game.bird.jump()
             pressed = True
         else:
             if not pygame.key.get_pressed()[pygame.K_SPACE]:
@@ -673,5 +678,8 @@ while game.running:
     # after drawing, flip the display
     pygame.display.flip()
     clock.tick(60)  # limits FPS to 60
+
+
+## quit pygame
 
 pygame.quit()
