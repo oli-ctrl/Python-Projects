@@ -78,7 +78,9 @@ class Board():
         screen.blit(text, (10, 10))
         text = my_font.render(f"White: {self.wins['White']}", False, (0, 0, 0))
         screen.blit(text, (10, 40))
-        text = my_font.render(f"{self.turn}'s turn", False, (0, 0, 0))
+        text = my_font.render(f"{self.turn}'s Turn", False, (0, 0, 0))
+        screen.blit(text,(1100, 10))
+            
 
         ## draw pieces
         for i in reversed(self.allpieces):
