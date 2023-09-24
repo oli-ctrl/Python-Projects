@@ -16,39 +16,7 @@ def boardgen(size = (10,10)):
             board2[currentpos[0]-1][currentpos[1]-1] = Cell(cell, currentpos[0]-1, currentpos[1]-1)
     return board2
 
-    ## cardinal directions
-    directions = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
-    ## empty vars get filled later
-    all = []
-    count = 0
-    ## check all directions and add to list if they exist
-    for i in directions:
-        try:
-            ## add value to the lsit of all values
-            all.append(b[pos[0]+i[0]][pos[1]+i[1]])
-            count+=1
-        except:
-            ## often when you are on the edge of the board you will get an error so just pass
-            pass
-    ## return the average of all values
-    average = sum(all)/count
-    return average
-
-
 def draw():
-    # currentpos = [0,0]
-    # for row in board:
-    #     currentpos[1] += Cellsize
-    #     currentpos[0] = 0
-    #     for cell in row:
-    #         currentpos[0] += Cellsize
-    #         if cell != None:
-    #             color = cell.color
-    #         else:
-    #             color = (255,255,255)
-    #         pygame.draw.rect(color = color, 
-    #                          surface = screen, 
-    #                          rect = (currentpos[0]-Cellsize,currentpos[1]-Cellsize, Cellsize,Cellsize ))
     for part in Particlelist:
         part.draw()  
     s = pygame.Surface(size=size)  # the size of your rect
@@ -111,7 +79,7 @@ class Particle:
     
     def draw(self):
         s = pygame.Surface((3,3))  # the size of your rect
-        s.set_alpha(128)               # alpha level
+        s.set_alpha(28)               # alpha level
         s.fill(self.color)           # this fills the entire surface
         screen.blit(s, (self.position))    # (0,0) are the top-left coordinates
         
@@ -129,10 +97,6 @@ class Cell():
         vector[0] = math.cos(radians)
         vector[1] = math.sin(radians)
         return vector
-    
-
-
-    
     
 pygame.init()
  
@@ -152,7 +116,7 @@ clock = pygame.time.Clock()
 
 ## spawn particles
 Particlelist = []
-for x in range(0,5000):
+for x in range(0,10000):
     Particlelist.append(Particle(random.randint(0,size[0]*Cellsize),random.randint(0,size[1]*Cellsize)))
  
 # -------- Main Program Loop -----------
@@ -178,7 +142,7 @@ while not done:
     pygame.display.flip()
  
     # --- Limit to 60 frames per second
-    clock.tick(120)
+    clock.tick(500)
  
 # Close the window and quit.
 pygame.quit()
