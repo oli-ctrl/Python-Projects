@@ -16,6 +16,34 @@ def boardgen(size = (10,10)):
             board2[currentpos[0]-1][currentpos[1]-1] = Cell(cell, currentpos[0]-1, currentpos[1]-1)
     return board2
 
+def checdirs(pos, b):
+    ## cardinal directions
+    directions = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]
+                  ]
+    ## empty vars get filled later
+    all = []
+    count = 0
+    ## check all directions and add to list if they exist
+
+    for i in directions:
+        try:
+            ## add value to the lsit of all values
+            all.append(b[pos[0]+i[0]][pos[1]+i[1]].vector)
+            count+=1
+        except:
+            ## often when you are on the edge of the board you will get an error so just pass
+            pass
+    ## return the average of all values
+    all0 = []
+    all1 = []
+    for i in range(len(all)):
+        all0.append(all[i][0])
+        all1.append(all[i][1])
+
+    average0 = sum(all0)/count
+    average1 = sum(all1)/count
+    return [average0,average1]
+
 def draw():
     for part in Particlelist:
         part.draw()  
@@ -37,9 +65,10 @@ class Particle:
         
     def Move(self):
         ## get direction of current cell
-        self.direction = self.__BlendVectors(self.direction, self.__GetDirection())
-        self.position[0] += self.direction[0]*random.randint(0,self.speed*100)/100
-        self.position[1] += self.direction[1]*random.randint(0,self.speed*100)/100
+        self.direction = self.__GetDirection()
+        ## move particle
+        self.position[0] += self.direction[0]*self.speed
+        self.position[1] += self.direction[1]*self.speed
         if self.position[0] > size[0]*Cellsize:
             self.position[0] = 0
         if self.position[0] < 0:
@@ -48,46 +77,28 @@ class Particle:
             self.position[1] = 0
         if self.position[1] < 0:
             self.position[1] = size[1]*Cellsize
-
-        return True
     
     def __GetDirection(self):
         ## get current cell
         currentCell = self.__GetCurrentCell()
         ## get direction of current cell
-        currentCellDirection = board[currentCell[0]-1][currentCell[1]-1].vector
+        currentCellDirection = checdirs(currentCell, board)
         return currentCellDirection
 
         
     def __GetCurrentCell(self):
         ## get coords of current cell
-        currentCell = [math.floor(self.position[0]/Cellsize),math.floor(self.position[1]/Cellsize)]
+        currentCell = [math.floor(self.position[0]/Cellsize)-1,math.floor(self.position[1]/Cellsize)-1]
         return currentCell
     
-    def __BlendVectors(self, vec1,vec2):
-        if vec1[0] > vec2[0]:
-            vec1[0] -= vec1[0]-vec2[0]/10
-        elif vec1[0] < vec2[0]:
-            vec1[0] += vec2[0]-vec1[0]/10
-        if vec1[1] > vec2[1]:
-            vec1[1] -= vec1[1]-vec2[1]/10
-        elif vec1[1] < vec2[1]: 
-            vec1[1] += vec2[1]-vec1[1]/10
-        
-        return vec1
-        
-    
+
     def draw(self):
-        s = pygame.Surface((3,3))  # the size of your rect
-        s.set_alpha(28)               # alpha level
-        s.fill(self.color)           # this fills the entire surface
-        screen.blit(s, (self.position))    # (0,0) are the top-left coordinates
+        pygame.draw.circle(screen, self.color, (self.position[0],self.position[1]), 1)
         
     
 class Cell():
     def __init__(self,noiseValue, x,y):
         self.position = [x,y]
-        self.direction = [0,0]
         self.color = (abs(noiseValue*255),abs(noiseValue*255),abs(noiseValue*255))
         self.vector = self.__GetDirection(noiseValue)
 
@@ -96,6 +107,9 @@ class Cell():
         radians = math.radians(math.degrees(noiseValue*180))
         vector[0] = math.cos(radians)
         vector[1] = math.sin(radians)
+        ## normalize direction
+        vector[0] = vector[0]/math.sqrt(vector[0]**2+vector[1]**2)
+        vector[1] = vector[1]/math.sqrt(vector[0]**2+vector[1]**2)
         return vector
     
 pygame.init()
@@ -116,7 +130,7 @@ clock = pygame.time.Clock()
 
 ## spawn particles
 Particlelist = []
-for x in range(0,10000):
+for x in range(0,500):
     Particlelist.append(Particle(random.randint(0,size[0]*Cellsize),random.randint(0,size[1]*Cellsize)))
  
 # -------- Main Program Loop -----------
@@ -142,7 +156,7 @@ while not done:
     pygame.display.flip()
  
     # --- Limit to 60 frames per second
-    clock.tick(500)
+    clock.tick(600)
  
 # Close the window and quit.
 pygame.quit()
