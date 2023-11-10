@@ -1,14 +1,11 @@
-try:
-    from PIL import Image
-except ImportError:
-    raise ImportError("Pillow is not installed. Run 'python3 -m pip install Pillow' to install it")
+from PIL import Image
 from random import randint
 from time import time
 import os
 
 #settings for the random shift of the image
-shiftfreq = 300
-maxshiftamount = 250
+shiftfreq = 200
+maxshiftamount = 100
 minshiftamount = 0
 
 #rotation settings for the image    

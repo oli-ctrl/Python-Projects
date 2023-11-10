@@ -116,7 +116,7 @@ clock = pygame.time.Clock()
 
 ## spawn particles
 Particlelist = []
-for x in range(0,10000):
+for x in range(0,1000):
     Particlelist.append(Particle(random.randint(0,size[0]*Cellsize),random.randint(0,size[1]*Cellsize)))
  
 # -------- Main Program Loop -----------
@@ -142,7 +142,7 @@ while not done:
     pygame.display.flip()
  
     # --- Limit to 60 frames per second
-    clock.tick(500)
+    clock.tick(10000)
  
 # Close the window and quit.
 pygame.quit()
