@@ -4,7 +4,7 @@ import math
 from pythonperlin import perlin
 
 def boardgen(size = (10,10)):
-    board = perlin((4,4), dens=int(size[0]/4), seed=None)
+    board = perlin((1,1), dens=int(size[0]/1), seed=None)
     board2 = [[None for width in range(size[0])] for height in range(size[1])]
     ## convert board to cell objects
     currentpos = [0,0]
@@ -48,7 +48,7 @@ def draw():
     for part in Particlelist:
         part.draw()  
     s = pygame.Surface(size=size)  # the size of your rect
-    s.set_alpha(1)                # alpha level
+    s.set_alpha(0)                # alpha level
     s.fill((0,0,0))           # this fills the entire surface
     screen.blit(s, (0,0))    # (0,0) are the top-left coordinates
 
@@ -60,7 +60,8 @@ class Particle:
     def __init__(self, x,y):
         self.position = [x,y]
         self.speed = 1
-        self.color = (255, 255, 255)
+        colval = random.randint(1,255)
+        self.color = (colval,colval,colval)
         self.direction = self.__GetDirection()
         
     def Move(self):
@@ -130,8 +131,12 @@ clock = pygame.time.Clock()
 
 ## spawn particles
 Particlelist = []
-for x in range(0,500):
-    Particlelist.append(Particle(random.randint(0,size[0]*Cellsize),random.randint(0,size[1]*Cellsize)))
+# for x in range(0,40000):
+#     Particlelist.append(Particle(random.randint(0,size[0]*Cellsize),random.randint(0,size[1]*Cellsize)))
+
+for x in range(0,size[0]*Cellsize,Cellsize*2):
+    for y in range(0,size[1]*Cellsize,Cellsize*2):
+        Particlelist.append(Particle(x,y))
  
 # -------- Main Program Loop -----------
 while not done:
